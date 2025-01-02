@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Audio Platter</title>
+    <link rel="stylesheet" href="./assets/styles/styles.css">
+</head>
+<body>
+    <header class="header">
+        <h1>Audio Platter</h1>
+        <p>Your curated mix of music and podcasts</p>
+    </header>
+
+    <main class="container">
+        <section class="search-section">
+            <input 
+                type="text" 
+                id="searchInput" 
+                class="search-bar" 
+                placeholder="Search for music or podcasts...">
+            <button id="searchButton" class="search-button">Search</button>
+        </section>
+
+        <section class="results-section">
+            <h2>Recommendations</h2>
+            <div id="resultsContainer" class="results-container">
+       
+            </div>
+        </section>
+
+        <section class="favorites-section">
+            <h2>Favorites</h2>
+            <div id="favoritesContainer" class="favorites-container">
+ 
+            </div>
+        </section>
+    </main>
+
+    <footer class="footer">
+        <p>&copy; 2025 Audio Platter. All rights reserved.</p>
+    </footer>
+    <script type="module" src="./scripts/main.js"></script>
+</body>
+</html>
