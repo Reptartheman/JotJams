@@ -7,6 +7,7 @@
     <link rel="stylesheet" href="./assets/styles/styles.css">
 </head>
 <body>
+    <div class="app-container">
     <header class="header">
         <h1>Audio Platter</h1>
         <p>Your curated mix of music and podcasts</p>
@@ -18,28 +19,29 @@
                 type="text" 
                 id="searchInput" 
                 class="search-bar" 
-                placeholder="Search for music or podcasts...">
+                placeholder="Search...">
             <button id="searchButton" class="search-button">Search</button>
         </section>
 
-        <section class="results-section">
-            <h2>Recommendations</h2>
+        <section class="results-card">
+            <h2>Results</h2>
             <div id="resultsContainer" class="results-container">
-       
+                <ul class="results">
+                    <li id="trackName"></li>
+                    <li id="artistName"></li>
+                    <li id="release_Title"></li>
+                    <li id="release_Year"></li>
+                </ul>
             </div>
         </section>
 
-        <section class="favorites-section">
-            <h2>Favorites</h2>
-            <div id="favoritesContainer" class="favorites-container">
- 
-            </div>
-        </section>
+        
     </main>
 
     <footer class="footer">
         <p>&copy; 2025 Audio Platter. All rights reserved.</p>
     </footer>
+</div>
     <script type="module" src="./scripts/main.js"></script>
 </body>
 </html>

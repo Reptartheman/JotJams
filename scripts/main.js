@@ -1,37 +1,45 @@
-const apiKey = '1042921-Findit-9A7CC93F';
+const apiKey = 'jIsWwEpLHMbcjqlQQSea';
+const input = document.getElementById('searchInput');
+const searchButton = document.getElementById('searchButton');
+const resultsContainer = document.getElementById('resultsContainer');
 
+const queryMap = {
+  trackName: 'track',
+  artistName: 'artist',
+  albumTitle: 'release_title',
+  releaseYear: 'year',
+  
+}
 
 const fetchRelevantData = async (searchInput, apiKey) => {
-  const baseUrl = `https://api.openweathermap.org/data/2.5/weather?q=${searchInput}&appid=${apiKey}&units=imperial`;
-  
-  try {
-    const response = await fetch(baseUrl);
-    const data = await response.json();
-    return {
-      temperature: Math.floor(data.main.temp),
-      cityName: data.name,
-      weather: data.weather[0],
-      icon: `https://openweathermap.org/img/wn/${data.weather[0].icon}.png`
-    };
-  } catch (err) {
-    console.error('Error fetch err');
-    return null;
-  }
+  const baseUrl = 'https://api.discogs.com/database/search';
+  const query = `?q=${encodeURIComponent(searchInput)}&key=${apiKey}&secret=cUgaJgZJhrLgLKxattfmUZscPaUBDrcF&page=50&per_page=20`;
+
+  return fetch(`${baseUrl}${query}`)
+    .then((response) => {
+      if (!response.ok) {
+        throw new Error(`HTTP error! Status: ${response.status}`);
+      } else {
+        return response.json();
+      }
+    })
+    .then(data => data.results)
+    .catch(err => {
+      console.error('Error fetching data:', err);
+      return null;
+    })
 };
 
-const displayWeatherInfo = (weatherData) => {
+
+const displayArtistInfo = (data) => {
   const displayMap = {
-    temperature: (temp) => `${temp}℉`,
-    location: (name) => `Current conditions for ${name}`,
-    weatherDescription: (desc) => desc,
-    weatherIcon: (icon) => {
-      const weatherIcon = document.getElementById("weatherIcon");
-      weatherIcon.setAttribute("src", icon);
-      return weatherIcon;
-    }
+    trackName: (track) => `${track}`,
+    artistName: (artist) => `The artist is ${artist}`,
+    release_Title: (title) => title,
+    release_Year: (year) => `Released in: ${year}`
   };
 
-  Object.entries(weatherData).forEach(([key, value]) => {
+  Object.entries(data).forEach(([key, value]) => {
     const element = document.getElementById(key);
     if (element) {
       element.innerHTML = displayMap[key](value);
@@ -42,15 +50,15 @@ const displayWeatherInfo = (weatherData) => {
 
 searchButton.addEventListener('click', async (e) => {
   e.preventDefault();
-  const searchInput = cityInput.value.trim();
-  const weatherData = await fetchWeatherData(searchInput, apiKey);
-  
-  if (weatherData) {
-    displayWeatherInfo({
-      temperature: weatherData.temperature,
-      location: weatherData.cityName,
-      weatherDescription: weatherData.weather.description,
-      weatherIcon: weatherData.icon
+  const searchInput = input.value.trim();
+  const artistData = await fetchRelevantData(searchInput, apiKey);
+  console.log(artistData);
+  if (artistData) {
+    displayArtistInfo({
+      trackName: artistData.track,
+      artistName: artistData.artist,
+      release_Title: artistData.title,
+      release_Year: artistData.year
     });
   }
 });

@@ -4,6 +4,8 @@ body {
   font-family: Arial, sans-serif;
   background-color: #f9f9f9;
   color: #333;
+  width: 100vw;
+  height: 100vh;
 }
 
 header {
@@ -57,7 +59,7 @@ header p {
   background-color: #3700b3;
 }
 
-.results-section, .favorites-section {
+.results-card, .favorites-section {
   margin-top: 20px;
 }
 
