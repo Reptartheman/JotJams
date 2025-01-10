@@ -13,7 +13,7 @@ const queryMap = {
 
 const fetchRelevantData = async (searchInput, apiKey) => {
   const baseUrl = 'https://api.discogs.com/database/search';
-  const query = `?q=${encodeURIComponent(searchInput)}&key=${apiKey}&secret=cUgaJgZJhrLgLKxattfmUZscPaUBDrcF&page=50&per_page=20`;
+  const query = `?q=${encodeURIComponent(searchInput)}&key=${apiKey}&secret=cUgaJgZJhrLgLKxattfmUZscPaUBDrcF&page=50&per_page=3`;
 
   return fetch(`${baseUrl}${query}`)
     .then((response) => {
@@ -33,9 +33,8 @@ const fetchRelevantData = async (searchInput, apiKey) => {
 
 const displayArtistInfo = (data) => {
   const displayMap = {
-    trackName: (track) => `${track}`,
-    artistName: (artist) => `The artist is ${artist}`,
-    release_Title: (title) => title,
+    title: (title) => `${title}`,
+    type: (type) => `The release type is ${type}`,
     release_Year: (year) => `Released in: ${year}`
   };
 
@@ -52,12 +51,13 @@ searchButton.addEventListener('click', async (e) => {
   e.preventDefault();
   const searchInput = input.value.trim();
   const artistData = await fetchRelevantData(searchInput, apiKey);
-  console.log(artistData);
+  for (const elem of artistData) {
+    return { title, type, year} = elem;
+  }
   if (artistData) {
     displayArtistInfo({
-      trackName: artistData.track,
-      artistName: artistData.artist,
-      release_Title: artistData.title,
+      title: artistData.title,
+      type: artistData.type,
       release_Year: artistData.year
     });
   }
