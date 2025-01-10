@@ -1,7 +1,17 @@
-/* General Styles */
+@import url('https://fonts.googleapis.com/css2?family=Allan&display=swap');
+
+:root {
+  --font-family: 'Allan', serif;
+  --font-weight-regular: 400;
+  --font-weight-bold: 700;
+}
+
+
+
 body {
   margin: 0;
-  font-family: Arial, sans-serif;
+  font-family: var(--font-family);
+  font-weight: var(--font-weight-regular);
   background-color: #f9f9f9;
   color: #333;
   width: 100vw;
@@ -23,6 +33,15 @@ header h1 {
 header p {
   margin: 5px 0 0;
   font-size: 1rem;
+}
+
+ul {
+  list-style-type: none;
+}
+
+.app-container {
+  width: 100vw;
+  height: 100vh;
 }
 
 .container {

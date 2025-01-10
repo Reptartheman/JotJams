@@ -3,14 +3,14 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Audio Platter</title>
+    <title>Jot Jams</title>
     <link rel="stylesheet" href="./assets/styles/styles.css">
 </head>
 <body>
     <div class="app-container">
     <header class="header">
-        <h1>Audio Platter</h1>
-        <p>Your curated mix of music and podcasts</p>
+        <h1>Jot Jams</h1>
+        <p>Jot down your favorites!</p>
     </header>
 
     <main class="container">
@@ -22,15 +22,19 @@
                 placeholder="Search...">
             <button id="searchButton" class="search-button">Search</button>
         </section>
+        <select id="dropDown">
+            <option value="artist">Artist</option>
+            <option value="genre">Genre</option>
+            <option value="type">Release Type</option>
+            <option value="year">Release Year</option>
+          </select>
+          
 
         <section class="results-card">
-            <h2>Results</h2>
+            <h2 id="resultsHeading">Your results will appear below</h2>
             <div id="resultsContainer" class="results-container">
-                <ul class="results">
-                    <li id="trackName"></li>
-                    <li id="artistName"></li>
-                    <li id="release_Title"></li>
-                    <li id="release_Year"></li>
+                <ul id="resultsList" class="results">
+                    
                 </ul>
             </div>
         </section>
@@ -39,7 +43,7 @@
     </main>
 
     <footer class="footer">
-        <p>&copy; 2025 Audio Platter. All rights reserved.</p>
+        <p>&copy; 2025 Jot Jams. All rights reserved.</p>
     </footer>
 </div>
     <script type="module" src="./scripts/main.js"></script>

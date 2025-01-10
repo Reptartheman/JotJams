@@ -1,21 +1,17 @@
 const apiKey = 'jIsWwEpLHMbcjqlQQSea';
 const input = document.getElementById('searchInput');
 const searchButton = document.getElementById('searchButton');
-const resultsContainer = document.getElementById('resultsContainer');
 
-const queryMap = {
-  trackName: 'track',
-  artistName: 'artist',
-  albumTitle: 'release_title',
-  releaseYear: 'year',
-  
-}
+//look into parameterize queries
+//https://api.discogs.com/database/search?q=Nirvana&type=artist&key=API_KEY&secret=API_SECRET
+
 
 const fetchRelevantData = async (searchInput, apiKey) => {
-  const baseUrl = 'https://api.discogs.com/database/search';
-  const query = `?q=${encodeURIComponent(searchInput)}&key=${apiKey}&secret=cUgaJgZJhrLgLKxattfmUZscPaUBDrcF&page=50&per_page=3`;
+  const baseUrl = 'https://api.discogs.com/database/search?q=';
+  const queryType = document.getElementById('dropDown').value; 
+  const query = `${encodeURIComponent(searchInput)}&type=${queryType}&key=${apiKey}&secret=cUgaJgZJhrLgLKxattfmUZscPaUBDrcF&page=1&per_page=30`;
 
-  return fetch(`${baseUrl}${query}`)
+    return fetch(`${baseUrl}${query}`)
     .then((response) => {
       if (!response.ok) {
         throw new Error(`HTTP error! Status: ${response.status}`);
@@ -31,19 +27,24 @@ const fetchRelevantData = async (searchInput, apiKey) => {
 };
 
 
-const displayArtistInfo = (data) => {
-  const displayMap = {
-    title: (title) => `${title}`,
-    type: (type) => `The release type is ${type}`,
-    release_Year: (year) => `Released in: ${year}`
-  };
-
-  Object.entries(data).forEach(([key, value]) => {
-    const element = document.getElementById(key);
-    if (element) {
-      element.innerHTML = displayMap[key](value);
-    }
-  });
+const displayArtistInfo = (dataArray, input) => {
+  const resultsList = document.getElementById('resultsList');
+  const resultsHeading = document.getElementById('resultsHeading');
+  resultsList.innerHTML = '';
+  resultsHeading.innerHTML = `You searched for: ${input}`;
+  const resultingData = dataArray.find(result => result.title === input);
+  console.log(resultingData);
+  /*  resultingData.forEach((data) => {
+    resultsList.innerHTML = ` 
+      <li id="artist">Can be listened to on: ${data.title || 'Unknown album'}</li>
+      <li id="artist">Genre: ${data.genre || 'Unknown genre'}</li>
+      <li id="type">Release type: ${data.type || 'Unknown release'}</li>
+      <li id="year">Release year: ${data.year || 'Unknown year'}</li>
+        <div class="album-image-container">
+              <img src="${data.cover_image}" alt="album cover">
+        </div>
+    `
+  }); */
 };
 
 
@@ -51,14 +52,8 @@ searchButton.addEventListener('click', async (e) => {
   e.preventDefault();
   const searchInput = input.value.trim();
   const artistData = await fetchRelevantData(searchInput, apiKey);
-  for (const elem of artistData) {
-    return { title, type, year} = elem;
-  }
+  console.log(artistData);
   if (artistData) {
-    displayArtistInfo({
-      title: artistData.title,
-      type: artistData.type,
-      release_Year: artistData.year
-    });
+    displayArtistInfo(artistData, searchInput);
   }
 });
