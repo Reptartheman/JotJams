@@ -32,9 +32,8 @@ const displayArtistInfo = (dataArray, input) => {
   const resultsHeading = document.getElementById('resultsHeading');
   resultsList.innerHTML = '';
   resultsHeading.innerHTML = `You searched for: ${input}`;
-  const resultingData = dataArray.find(result => result.title === input);
-  console.log(resultingData);
-  /*  resultingData.forEach((data) => {
+
+  dataArray.forEach((data) => {
     resultsList.innerHTML = ` 
       <li id="artist">Can be listened to on: ${data.title || 'Unknown album'}</li>
       <li id="artist">Genre: ${data.genre || 'Unknown genre'}</li>
@@ -44,7 +43,7 @@ const displayArtistInfo = (dataArray, input) => {
               <img src="${data.cover_image}" alt="album cover">
         </div>
     `
-  }); */
+  });
 };
 
 
