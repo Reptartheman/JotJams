@@ -93,6 +93,10 @@ ul {
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
+.results-heading {
+  font-size: 3rem;
+}
+
 .results-container > div, .favorites-container > div {
   flex: 1 1 calc(50% - 20px);
   padding: 10px;
