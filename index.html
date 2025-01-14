@@ -15,24 +15,16 @@
 
     <main class="container">
         <section class="search-section">
-            <input 
-                type="text" 
-                id="searchInput" 
-                class="search-bar" 
-                placeholder="Search...">
+            <input class="search-bar" type="text" id="artistInput" placeholder="Enter song name" />
+            <input class="search-bar" type="text" id="trackInput" placeholder="Enter artist name" />
             <button id="searchButton" class="search-button">Search</button>
         </section>
-        <select id="dropDown">
-            <option value="track">Song Name</option>
-            <option value="artist">Artist</option>
-            <option value="release_title">Album Title</option>
-            <option value="year">Release Year</option>
-          </select>
+ 
           
 
-        <section class="results-card">
-            <h2 class="results-heading" id="resultsHeading">Your results will appear below</h2>
-            <div id="resultsContainer" class="results-container">
+        <section class="results-container">
+            <h2 class="results-heading" id="resultsHeading">Random artist of the day</h2>
+            <div id="resultsContainer" class="results-card">
                 <ul id="resultsList" class="results">
                     
                 </ul>
