@@ -3,17 +3,13 @@ const input = document.getElementById('searchInput');
 const artistInput = document.getElementById('artistInput');
 const trackInput = document.getElementById('trackInput');
 const resultsHeading = document.getElementById('resultsHeading');
-const queryList = ['type','title','release_title','artist', 'label' ,'genre' ,'style','track'];
+const getRandomItem = (arr) => arr[Math.floor(Math.random() * arr.length)];
 
 
 
-async function init() {
-  const getRandomItem = (arr) => arr[Math.floor(Math.random() * arr.length)];
-  const randomQuery = getRandomItem(queryList);
-  console.log(`Random Query Type: ${randomQuery}`);
-  const query = `https://api.discogs.com/database/search?&type=${randomQuery}&key=${apiKey}&secret=cUgaJgZJhrLgLKxattfmUZscPaUBDrcF&page=1&per_page=100`;
-  
-  return fetch(query)
+async function fetchRandomData(random) {
+
+  return fetch(random)
     .then((response) => {
       if (!response.ok) {
         throw new Error(`HTTP error! Status: ${response.status}`);
@@ -21,15 +17,26 @@ async function init() {
         return response.json();
       }
     })
-    .then(data => console.log(data.results))
+    .then(data => data.results)
     .catch(err => {
       console.error('Error fetching data:', err);
       return null;
     });
-
 }
 
 
+
+
+const init = async () => {
+  const queryList = ['release','artist', 'label','master'];
+  const randomQueryType = getRandomItem(queryList);
+  const query = `https://api.discogs.com/database/search?&type=${randomQueryType}&key=${apiKey}&secret=cUgaJgZJhrLgLKxattfmUZscPaUBDrcF&page=7&per_page=100`;
+  const data = await fetchRandomData(query);
+  //console.log(data);
+  return data;
+}
+
+init().then(results => console.log(results));
 
 const fetchRelevantData = async (trackTitle, artistName) => {
   const query = `https://api.discogs.com/database/search?q=${encodeURIComponent(trackTitle)}+${encodeURIComponent(artistName)}&type=master&key=${apiKey}&secret=cUgaJgZJhrLgLKxattfmUZscPaUBDrcF&page=1&per_page=3`;
@@ -57,9 +64,7 @@ const displayTrackInfo = (dataArray, input) => {
   const resultsContainer = document.getElementById('resultsContainer');
   resultsContainer.innerHTML = ''; // Clear previous results
   resultsHeading.textContent = '';
-    if (input !== null) {
-      resultsHeading.textContent = `You searched for ${input}`;
-    }
+  resultsHeading.textContent = `You searched for ${input}`;
   dataArray.forEach((data, index) => {
     const trackElement = document.createElement('div');
     trackElement.classList.add('track-card');
@@ -99,7 +104,7 @@ const renderData = async (e) => {
 
 
 
-await init();
+
 
 searchButton.addEventListener('click', renderData);
 
