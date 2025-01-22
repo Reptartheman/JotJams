@@ -27,16 +27,16 @@ async function fetchRandomData(random) {
 
 
 
-const init = async () => {
+const generateRandomQuery = async () => {
   const queryList = ['release','artist', 'label','master'];
   const randomQueryType = getRandomItem(queryList);
   const query = `https://api.discogs.com/database/search?&type=${randomQueryType}&key=${apiKey}&secret=cUgaJgZJhrLgLKxattfmUZscPaUBDrcF&page=7&per_page=100`;
   const data = await fetchRandomData(query);
-  //console.log(data);
-  return data;
+
+  return getRandomItem(data);
 }
 
-init().then(results => console.log(results));
+
 
 const fetchRelevantData = async (trackTitle, artistName) => {
   const query = `https://api.discogs.com/database/search?q=${encodeURIComponent(trackTitle)}+${encodeURIComponent(artistName)}&type=master&key=${apiKey}&secret=cUgaJgZJhrLgLKxattfmUZscPaUBDrcF&page=1&per_page=3`;
@@ -60,7 +60,7 @@ const fetchRelevantData = async (trackTitle, artistName) => {
 
 //if the users search option is to search by artist, then the user will be presented with the cover image with the resource_url attached to it so that the user can see more...
 
-const displayTrackInfo = (dataArray, input) => {
+const displayTrackInfo = (dataArray = [], input = '') => {
   const resultsContainer = document.getElementById('resultsContainer');
   resultsContainer.innerHTML = ''; // Clear previous results
   resultsHeading.textContent = '';
@@ -85,6 +85,7 @@ const renderData = async (e) => {
   const trackTitle = trackInput.value.trim();
   const trackAndArtist = `${trackTitle} by ${artistName} `;
   const trackData = await fetchRelevantData(artistName, trackTitle);
+  const randomSearch = generateRandomQuery().then(results => results);
   console.log(trackData);
 
   if (!artistName || !trackTitle) {
@@ -98,12 +99,12 @@ const renderData = async (e) => {
   if (trackData && trackData.length > 0) {
     displayTrackInfo(trackData, trackAndArtist);
   } else {
-    console.log('No results found.');
+    displayTrackInfo(randomSearch, '');
   }
 }
 
 
-
+document.addEventListener('onload', renderData);
 
 
 searchButton.addEventListener('click', renderData);
