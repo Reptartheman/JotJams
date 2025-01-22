@@ -3,7 +3,31 @@ const input = document.getElementById('searchInput');
 const artistInput = document.getElementById('artistInput');
 const trackInput = document.getElementById('trackInput');
 const resultsHeading = document.getElementById('resultsHeading');
-const getRandomArtist = (arr) => arr[Math.floor(Math.random() * arr.length)];
+const queryList = ['type','title','release_title','artist', 'label' ,'genre' ,'style','track'];
+
+
+
+async function init() {
+  const getRandomItem = (arr) => arr[Math.floor(Math.random() * arr.length)];
+  const randomQuery = getRandomItem(queryList);
+  console.log(`Random Query Type: ${randomQuery}`);
+  const query = `https://api.discogs.com/database/search?&type=${randomQuery}&key=${apiKey}&secret=cUgaJgZJhrLgLKxattfmUZscPaUBDrcF&page=1&per_page=100`;
+  
+  return fetch(query)
+    .then((response) => {
+      if (!response.ok) {
+        throw new Error(`HTTP error! Status: ${response.status}`);
+      } else {
+        return response.json();
+      }
+    })
+    .then(data => console.log(data.results))
+    .catch(err => {
+      console.error('Error fetching data:', err);
+      return null;
+    });
+
+}
 
 
 
@@ -33,7 +57,9 @@ const displayTrackInfo = (dataArray, input) => {
   const resultsContainer = document.getElementById('resultsContainer');
   resultsContainer.innerHTML = ''; // Clear previous results
   resultsHeading.textContent = '';
-  resultsHeading.textContent = `You searched for ${input}`;
+    if (input !== null) {
+      resultsHeading.textContent = `You searched for ${input}`;
+    }
   dataArray.forEach((data, index) => {
     const trackElement = document.createElement('div');
     trackElement.classList.add('track-card');
@@ -71,6 +97,9 @@ const renderData = async (e) => {
   }
 }
 
+
+
+await init();
 
 searchButton.addEventListener('click', renderData);
 
