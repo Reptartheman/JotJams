@@ -31,9 +31,9 @@ const generateRandomQuery = async () => {
   const queryList = ['release','artist', 'label','master'];
   const randomQueryType = getRandomItem(queryList);
   const query = `https://api.discogs.com/database/search?&type=${randomQueryType}&key=${apiKey}&secret=cUgaJgZJhrLgLKxattfmUZscPaUBDrcF&page=7&per_page=100`;
+  console.log(randomQueryType);
   const data = await fetchRandomData(query);
-
-  return getRandomItem(data);
+  return data;
 }
 
 
@@ -60,7 +60,7 @@ const fetchRelevantData = async (trackTitle, artistName) => {
 
 //if the users search option is to search by artist, then the user will be presented with the cover image with the resource_url attached to it so that the user can see more...
 
-const displayTrackInfo = (dataArray = [], input = '') => {
+const displayTrackInfo = (dataArray, input = '') => {
   const resultsContainer = document.getElementById('resultsContainer');
   resultsContainer.innerHTML = ''; // Clear previous results
   resultsHeading.textContent = '';
@@ -85,16 +85,8 @@ const renderData = async (e) => {
   const trackTitle = trackInput.value.trim();
   const trackAndArtist = `${trackTitle} by ${artistName} `;
   const trackData = await fetchRelevantData(artistName, trackTitle);
-  const randomSearch = generateRandomQuery().then(results => results);
-  console.log(trackData);
-
-  if (!artistName || !trackTitle) {
-    
-    console.error('Both artist name and track title are required.');
-    return;
-  }
-
-  
+  const randomSearch = await generateRandomQuery();
+  console.log(randomSearch);
 
   if (trackData && trackData.length > 0) {
     displayTrackInfo(trackData, trackAndArtist);
@@ -104,7 +96,7 @@ const renderData = async (e) => {
 }
 
 
-document.addEventListener('onload', renderData);
+document.addEventListener('DOMContentLoaded', renderData);
 
 
 searchButton.addEventListener('click', renderData);
