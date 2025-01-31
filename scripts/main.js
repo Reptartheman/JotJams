@@ -1,54 +1,65 @@
-const discCogsapiKey = "jIsWwEpLHMbcjqlQQSea";
 const input = document.getElementById("searchInput");
 const artistInput = document.getElementById("artistInput");
 const trackInput = document.getElementById("trackInput");
 const searchButton = document.getElementById("searchButton");
 const randomButton = document.getElementById("randomSearchButton");
+const moreInfoButton = document.getElementById("moreInfo");
 const resultsHeading = document.getElementById("resultsHeading");
 const getRandomItem = (arr) => arr[Math.floor(Math.random() * arr.length)];
 const getRandomNumber = (min, max) =>
   Math.floor(Math.random() * (max - min) + min);
 
-class FetchWrapper {
-  constructor(baseURL) {
-    this.baseURL = baseURL;
-  }
+const queryConfig = {
+  baseURL: "https://api.discogs.com",
+  key: "jIsWwEpLHMbcjqlQQSea",
+  secret: "cUgaJgZJhrLgLKxattfmUZscPaUBDrcF",
+  byArtist: "/artists/",
+  byMaster: "/masters/",
+  byRelease: "/releases/",
+  byLabel: "/labels/"
+};
 
-  get(endpoint) {
-    return fetch(this.baseURL + endpoint)
-      .then((response) => response.json())
-      .catch((err) => {
-        console.error("Error fetching data:", err);
-        return null;
-      });
-  }
+const dataFetcher = (baseConfig) => {
+  const fetchFromURL = async (url) => {
+    try {
+      const response = await fetch(url);
+      return await response.json();
+    } catch (err) {
+      console.error("Error fetching data:", err);
+      return null;
+    }
+  };
+
+  const fetchFromEndpoint = (endpoint) => {
+    const url = endpoint.startsWith("http") ? endpoint : `${baseConfig.baseURL}${endpoint}`;
+    return fetchFromURL(url);
+  };
+
+  return {
+    fetch: fetchFromEndpoint,
+  };
+};
+
+function capitalizeFirstLetter(str) {
+  if (!str) return '';
+  return str.charAt(0).toUpperCase() + str.slice(1);
 }
 
-const fetchData = async (query) => {
-  const API = new FetchWrapper(`https://api.discogs.com/`);
-  const data = await API.get(query);
-  return data;
-};
+const discogsAPI = dataFetcher(queryConfig);
 
-const getRandomData = async () => {
-  
-
+const getRandomArtist = async () => {
+  const searchTypes = ['artist', 'master', 'label', 'release']
+  const searchType = getRandomItem(searchTypes);
   const randomPageNumber = getRandomNumber(1, 100);
-  const randomQuery = `database/search?&type=artist&key=${discCogsapiKey}&secret=cUgaJgZJhrLgLKxattfmUZscPaUBDrcF&page=${randomPageNumber}&per_page=1`;
-  const data = await fetchData(randomQuery);
-  console.log(data);
-  return data.results;
+  const query = `/database/search?&type=${searchType}&key=${queryConfig.key}&secret=${queryConfig.secret}&page=${randomPageNumber}&per_page=1`;
+  const data = await discogsAPI.fetch(query);
+  return data?.results || [];
 };
 
-const getSearchedQuery = async (trackTitle, artistName) => {
-  const searchedQuery = `database/search?q=${encodeURIComponent(
-    trackTitle
-  )}+${encodeURIComponent(
-    artistName
-  )}&key=${discCogsapiKey}&secret=cUgaJgZJhrLgLKxattfmUZscPaUBDrcF&page=1&per_page=4`;
-  const data = await fetchData(searchedQuery);
-  console.log(data);
-  return data.results;
+const getSearchedArtist = async (trackTitle, artistName) => {
+  const query = `/database/search?q=${encodeURIComponent(trackTitle)}+${encodeURIComponent(artistName)}&key=${queryConfig.key}&secret=${queryConfig.secret}&page=1&per_page=4`;
+  const data = await discogsAPI.fetch(query);
+  return data?.results || [];
 };
 
 const displayTrackInfo = async (dataArray, input) => {
@@ -59,22 +70,14 @@ const displayTrackInfo = async (dataArray, input) => {
     const trackElement = document.createElement("div");
     trackElement.classList.add("track-card");
     trackElement.innerHTML = `
-      <li class="results-item" id="${index}">Artist: ${
-      data.title || "Unknown"
-    }</li>
+      <li class="results-item" id="${index}">Title: ${data.title || "Unknown"}</li>
+      <li class="results-item" id="${index}">Type: ${capitalizeFirstLetter(data.type) || "Unknown"}</li>
       <img src="${data.thumb || data.cover_image}" alt="Track Thumbnail" />`;
     resultsContainer.appendChild(trackElement);
   });
 };
 
-const getMoreInfo = async (resourceLink) => {
-
-    const detailedInfo = await fetchData(resourceLink);
-    console.log(detailedInfo);
-    return detailedInfo;
-};
-
-
+const getMoreInfo = (resourceUrl) => discogsAPI.fetch(resourceUrl);
 
 /* const moreInfoDisplay = (info) => {
   const artistDescription = info.profile;
@@ -91,9 +94,8 @@ const getMoreInfo = async (resourceLink) => {
 
 const renderRandomData = async (e) => {
   e.preventDefault();
-  const randomItem = await getRandomData();
-  const resource = await getMoreInfo(randomItem[0].resource_url)
-  console.log(resource);
+  const randomItem = await getRandomArtist();
+  console.log(randomItem);
   return displayTrackInfo(randomItem, "");
 };
 
@@ -101,10 +103,16 @@ const renderSearchedData = async (e) => {
   e.preventDefault();
   const artistName = artistInput.value.trim();
   const trackTitle = trackInput.value.trim();
-  const searchedItem = await getSearchedQuery(trackTitle, artistName);
+  const searchedItem = await getSearchedArtist(trackTitle, artistName);
+  console.log(searchedItem);
   const trackAndArtist = `${trackTitle} by ${artistName} `;
   return displayTrackInfo(searchedItem, trackAndArtist);
 };
 
+
+
+moreInfoButton.addEventListener("click", (e) => {
+  
+})
 randomButton.addEventListener("click", renderRandomData);
 searchButton.addEventListener("click", renderSearchedData);
