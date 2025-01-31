@@ -9,7 +9,20 @@ const getRandomItem = (arr) => arr[Math.floor(Math.random() * arr.length)];
 const getRandomNumber = (min, max) => Math.floor(Math.random() * (max - min) + min);
 
 
+class FetchWrapper {
+  constructor(baseURL) {
+      this.baseURL = baseURL;
+  }
 
+  get(endpoint) {
+    return fetch(this.baseURL + endpoint)
+        .then(response => response.json())
+        .catch(err => {
+          console.error('Error fetching data:', err);
+          return null;
+        });
+}
+}
 
 const fetchData = async (query) => {
   return fetch(query)
