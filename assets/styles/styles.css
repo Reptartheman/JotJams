@@ -114,7 +114,7 @@ li {
   gap: var(--size-14);
 }
 
-.search-button {
+.search-button, .secondary-button {
   width: 20vw;
   align-self: center;
   font-family: var(--main-font);
@@ -126,8 +126,12 @@ li {
   cursor: pointer;
 }
 
-.search-button:hover {
+.search-button:hover, .secondary-button:hover {
   background-color: #3700b3;
+}
+
+.secondary-button {
+  display: none;
 }
 
 .results-card,
