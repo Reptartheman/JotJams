@@ -44,7 +44,7 @@ function capitalizeFirstLetter(str) {
 const discogsAPI = dataFetcher(queryConfig);
 
 const getRandomData = async () => {
-  const searchTypes = ["artist", "master", "label", "release"];
+  const searchTypes = ["artist", "master", "release"];
   const searchType = getRandomItem(searchTypes);
   const randomPageNumber = getRandomNumber(1, 100);
   const query = `/database/search?&type=${searchType}&key=${queryConfig.key}&secret=${queryConfig.secret}&page=${randomPageNumber}&per_page=1`;
@@ -68,22 +68,19 @@ const initialReleaseDisplay = (data) => {
   }</li>
   <li class="results-item">Release Year: ${data.year || "Unknown"}</li>
   <li class="results-item">Genre: ${data.genre || "Unknown"}</li>
+  <li class="results-item">Label: ${data.label[0] || "Unknown"}</li>
   <img src="${data.thumb || data.cover_image}" alt="Track Thumbnail" />`;
 };
 const initialArtistDisplay = (data) => {
   return `<li class="results-item">Artist name: ${data.title || "Unknown"}</li>
   <img src="${data.thumb || data.cover_image}" alt="Track Thumbnail" />`;
 };
-const initialLabelDisplay = (data) => {
-  return `<li class="results-item">Label name: ${data.title || "Unknown"}</li>
-  <img src="${data.thumb || data.cover_image}" alt="Track Thumbnail" />`;
-};
+
 
 const displayHandlers = {
   master: initialReleaseDisplay,
   release: initialReleaseDisplay,
   artist: initialArtistDisplay,
-  label: initialLabelDisplay,
 };
 
 const createMoreInfoButton = (index, resourceUrl) => `
@@ -116,6 +113,7 @@ const displayTrackInfo = async (dataArray, input) => {
       button.addEventListener("click", getMoreInfo);
     });
   });
+  console.log(dataArray)
 };
 
 const getMoreInfo = async (e) => {
@@ -130,18 +128,30 @@ const getMoreInfo = async (e) => {
 };
 
 const displayMoreInfo = (button, info) => {
-  const artistDescription = info.profile || "No additional info available";
-  const full = info.realname || "Unknown";
+  const trackList = info.tracklist.map(listing => {
+    return {
+      "Track Number": listing.position,
+      "Track Title": listing.title,
+      "Track duration": listing.duration
+    }
+  })
+  console.log(trackList);
 
-  const detailsDiv = document.createElement("div");
+  for (let i = 0; i < trackList.length; i++) {
+    const detailsDiv = document.createElement("div");
   detailsDiv.classList.add("detailed-info");
   detailsDiv.innerHTML = `
-    <h3>Additional details</h3>
-    <p><strong>Full name:</strong> ${full}</p>
-    <p><strong>Profile:</strong> ${artistDescription}</p>
+    
+    <h3><strong>Track number:</strong> ${trackList[i]["Track Number"]}</h3>
+    <p><strong>Track name:</strong> ${trackList[i]["Track Title"]}</p>
+    <p><strong>Track duration:</strong> ${trackList[i]["Track duration"] || 'No duration provided'}</p>
   `;
-
   button.parentNode.appendChild(detailsDiv);
+  }
+
+  
+
+  
 };
 
 const renderRandomData = async (e) => {
