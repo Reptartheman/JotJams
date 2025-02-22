@@ -1,44 +1,45 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Jot Jams</title>
-    <link rel="stylesheet" href="./assets/styles/styles.css">
-</head>
-<body class="master-grid">
+    <link rel="stylesheet" href="./assets/styles/styles.css" />
+  </head>
+  <body class="master-grid">
     <div class="app-container">
-    <header class="header">
+      <header class="header">
         <h1>Jot Jams</h1>
         <p>Jot down your favorites!</p>
-    </header>
+      </header>
 
-    <main class="container">
+      <main class="container">
         <section class="search-section">
-            <input class="search-bar" type="text" id="trackInput" placeholder="Enter song name" />
-            <input class="search-bar" type="text" id="artistInput" placeholder="Enter artist name" />
-            <div id="searchButtonContainer" class="search-btn-container">
-                <button id="searchButton" class="search-button">Search</button>
-            <button id="randomSearchButton" class="search-button">Random</button>
-            </div>
-        </section>
- 
-          
-
-        <section class="results-container">
-            <h2 class="results-heading" id="resultsHeading">Enter a song and artist name, or click Random.</h2>
-                <ul id="resultsList" class="results">
-                    
-                </ul>
+          <input
+            class="search-bar"
+            type="text"
+            id="searchInput"
+            placeholder="Enter song and artist name"
+          />
+          <div id="searchButtonContainer" class="search-btn-container">
+            <button id="searchButton" class="search-button">Search</button>
+          </div>
         </section>
 
-        
-    </main>
+        <section class="results-card">
+          <h2 class="results-heading" id="resultsHeading">
+            Your results will appear below
+          </h2>
+          <div id="resultsContainer" class="results-container">
+            <ul id="resultsList" class="results"></ul>
+          </div>
+        </section>
+      </main>
 
-    <footer class="footer">
-        <p>&copy; 2025 Jot Jams. All rights reserved.</p>
-    </footer>
-</div>
+      <footer class="footer">
+        <p>&copy; 2025 Jot Jams. All rights reserved. Powered by Discogs API</p>
+      </footer>
+    </div>
     <script type="module" src="./scripts/main.js"></script>
-</body>
+  </body>
 </html>

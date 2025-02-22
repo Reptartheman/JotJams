@@ -118,6 +118,7 @@ img {
 }
 .search-btn-container {
   display: flex;
+  justify-content: center;
   gap: var(--size-14);
 }
 
