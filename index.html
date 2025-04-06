@@ -9,29 +9,50 @@
   <body class="master-grid">
     <div class="app-container">
       <header class="header">
+        <div class="speaker-container">
+          <img src="./assets/styles/monitor2FRAMERough-GREEN-B.png" alt="speaker">
+        </div>
+        <div class="title">
         <h1>Jot Jams</h1>
         <p>Jot down your favorites!</p>
-      </header>
-
-      <main class="container">
+      </div>
         <section class="search-section">
           <input
             class="search-bar"
             type="text"
             id="searchInput"
-            placeholder="Enter song and artist name"
+            placeholder="Song and artist name"
           />
           <div id="searchButtonContainer" class="search-btn-container">
             <button id="searchButton" class="search-button">Search</button>
           </div>
+          
         </section>
+        <div class="speaker-container">
+          <img src="./assets/styles/monitor2FRAMERough-GREEN-B.png" alt="speaker">
+        </div>
+      </header>
+
+      <main class="container">
+        
 
         <section class="results-card">
           <h2 class="results-heading" id="resultsHeading">
             Your results will appear below
           </h2>
           <div id="resultsContainer" class="results-container">
-            <ul id="resultsList" class="results"></ul>
+            <ul id="resultsList" class="results-list">
+              <li id="trackTitle" class="results-item"></li>
+              <li id="artist" class="results-item"></li>
+              <li id="album" class="results-item"></li>
+              <li id="releaseYear" class="results-item"></li>
+              <div class="tracklisting-btn-container">
+                <button id="trackListingBtn" class="secondary-button">Show tracklisting</button>
+              </div>
+              <div class="track-image-container">
+                <img src="" alt="Cover Image" class="cover-img" />
+              </div>
+            </ul>
           </div>
         </section>
       </main>

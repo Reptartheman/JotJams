@@ -7,12 +7,9 @@ const queryConfig = {
   secret: "cUgaJgZJhrLgLKxattfmUZscPaUBDrcF",
 };
 
-
-
 const buildURL = (baseURL, endpoint) => {
   return endpoint.startsWith("http") ? endpoint : `${baseURL}${endpoint}`;
 };
-
 
 const fetchFromEndpoint = (baseURL) => async (endpoint) => {
   const url = buildURL(baseURL, endpoint);
@@ -29,7 +26,6 @@ const fetchFromURL = async (url) => {
   }
 };
 
-
 const dataFetcher = (baseConfig) => {
   return fetchFromEndpoint(baseConfig.baseURL);
 };
@@ -38,107 +34,169 @@ const returnPromises = (...promises) => Promise.all(promises);
 
 const discogsAPIData = dataFetcher(queryConfig);
 
-
-const getInitialArtistData = async (userInput) => {
+const initialDataFetch = async (userInput) => {
   const query = `/database/search?q=${encodeURIComponent(userInput)}&key=${
     queryConfig.key
   }&secret=${queryConfig.secret}&page=1&per_page=1`;
   const data = await discogsAPIData(query);
-  console.log(data?.results);
-  return data?.results || [];
+  const results = data?.results || [];
+
+  if (results.length === 0) {
+    throw new Error("No results found for that search term.");
+  }
+  console.log(results);
+  return results;
 };
 
-const getMasterReleaseData = async (input) => {
-  const search = await getInitialArtistData(input);
-  const releaseUrl = `${search[0].master_url}?page=1&per_page=1`;
-  const releaseData = await discogsAPIData(releaseUrl);
-  return releaseData;
+const getMasterUrl = (initialData) => {
+  const masterUrl = `${initialData[0].master_url}?page=1&per_page=1`;
+  return masterUrl;
+};
+const dataFromMasterReleaseURL = async (releaseData) => {
+  const data = await discogsAPIData(releaseData);
+  console.log(data);
+  const updatedData = {
+    title: data.title,
+    artist: data.artists[0].name,
+    album: data.title,
+    year: data.year,
+    artistResourceUrl: data.artists[0].resource_url,
+    genre: data.genres,
+    trackOrder: data.tracklist,
+    mainReleaseData: data.main_release_url,
+    recentReleaseData: data.most_recent_release_url,
+    versions: data.versions_url,
+  };
+  console.log(updatedData);
+  return updatedData;
 };
 
-const getImages = async (input) => {
-  const data = await getInitialArtistData(input);
+const getSecondaryURLs = (updatedData) => {
+  const { artistResourceUrl, mainReleaseData, recentReleaseData, versions } =
+    updatedData;
+
   return {
-    coverImage: data[0]?.cover_image || null,
-    thumbNail: data[0]?.thumb || null
+    artistResourceUrl,
+    mainReleaseData,
+    recentReleaseData,
+    versions,
+  };
+};
+
+const getImages = (initialData) => {
+  return {
+    coverImage: initialData[0]?.cover_image || null,
+    thumbNail: initialData[0]?.thumb || null,
   };
 };
 
 
-const getArtistResourceURL = async (input) => {
-  const data = await getMasterReleaseData(input);
-  const artistArray = data.artists;
-  return await discogsAPIData(artistArray[0].resource_url);
+const buildInitialDisplay = (input, data) => {
+  const resultsList = document.getElementById("resultsList");
+  const resultsHeading = document.getElementById("resultsHeading");
+  const coverImage = document.querySelector(".cover-img");
+  resultsHeading.textContent = `You searched: ${input}`
+  resultsList.classList.toggle("active");
+
+  const trackTitle = document.getElementById("trackTitle");
+  trackTitle.textContent = `Track Title: ${data.title || "Unknown"}`;
+  
+  const artist = document.getElementById("artist")
+  artist.textContent = `Artist: ${data.artist || "Unknown"}`;
+
+  const album = document.getElementById("album");
+  album.textContent = `Album: ${data.album || "Unknown"}`;
+
+  const releaseYear = document.getElementById("releaseYear");
+  releaseYear.textContent = `Release Year: ${data.year || "Unknown"}`;
+
+  coverImage.src = `${data.coverImage}` 
 };
 
-const getArtistName = async (data) => {
-  return data.name;
+const createTrackListingButton = (trackOrder) => {
+  const button = document.createElement("button");
+  button.classList.add("more-info", "secondary-button");
+  button.textContent = "Show tracklisting";
+  button.addEventListener("click", () => getTrackListing(trackOrder));
+  return button;
 };
 
-const getTrackTitle = async (data) => {
-  const track = data.tracklist.find((track) => track.title === data.title);
-  return track.title;
+const getTrackListing = (trackOrder) => {
+  const container = document.createElement("div");
+  container.classList.add("detailed-info");
+
+  trackOrder.forEach((track) => {
+    const trackDiv = document.createElement("div");
+    trackDiv.innerHTML = `
+      <p><strong>${track.position}:</strong> ${track.title} — ${track.duration}</p>
+    `;
+    container.appendChild(trackDiv);
+  });
+  document.querySelector(".track-card").appendChild(container);
 };
 
-const getAlbumTitle = async (data) => {
-  return data.title;
+const createMoreInfoButton = (artistResourceUrl) => {
+  return `<button class="more-info secondary-button" data-url="${artistResourceUrl}">Show tracklisting</button>`;
 };
 
-const getAlbumReleaseYear = async (data) => {
-  return data.year;
+/* const getMoreInfo = async (e) => {
+  const artistResourceUrl = e.target.getAttribute("data-url");
+  if (artistResourceUrl) {
+    const detailedData = await discogsAPIData(artistResourceUrl);
+    console.log(detailedData);
+    const trackOrderData = trackOrderData()
+    displayMoreInfo(e.target, detailedData);
+  } else {
+    console.log("No additional resource available.");
+  }
+}; */
+
+const displayMoreInfo = (button, info) => {
+  const { members, profile } = info;
+  const membersDisplay = members.forEach((member, index) => {
+    const detailsDiv = document.createElement("div");
+    detailsDiv.classList.add("detailed-info");
+
+    detailsDiv.innerHTML = `
+    <p><strong>${index + 1}:</strong> ${
+      member.name || "No duration provided"
+    }</p>
+  `;
+    button.parentNode.appendChild(detailsDiv);
+  });
 };
-
-const buildDisplay = (input, info) => {
-  const resultsContainer = document.getElementById("resultsContainer");
-  resultsContainer.innerHTML = "";
-  resultsHeading.textContent = `Your search results: ${input}`;
-
-  const trackElement = document.createElement("div");
-  trackElement.classList.add("track-card");
-  trackElement.innerHTML = `
-  <div class="track-info">
-    <li class="results-item">Track Title: ${info.trackTitle || "Unknown"}</li>
-    <li class="results-item">Artist: ${info.artistName || "Unknown"}</li>
-    <li class="results-item">Album: ${info.albumTitle || "Unknown"}</li>
-    <li class="results-item">Release Year: ${info.releaseYear || "Unknown"}</li>
-  </div>
-  <div class="track-image">
-    <img src="${info.coverImage}" alt="Cover Image" class="cover-img" />
-  </div>
-`;
-
-  resultsContainer.appendChild(trackElement);
-}
-
-
 
 const renderSearchedData = async (e) => {
   e.preventDefault();
   const searchInput = input.value.trim();
+  const initialData = await initialDataFetch(searchInput);
+  const masterUrl = getMasterUrl(initialData);
+  const imageSources = getImages(initialData);
 
-  const [mainDataStructure, artistResource] = await returnPromises(getMasterReleaseData(searchInput), getArtistResourceURL(searchInput));
+  const mainData = await dataFromMasterReleaseURL(masterUrl);
+  const { title, artist, album, year, trackOrder } = mainData;
 
-
-  const [
-    trackTitle,
-    artistName,
-    albumTitle,
-    releaseYear,
-    albumArt
-  ] = await returnPromises(getTrackTitle(mainDataStructure), getArtistName(artistResource), 
-  getAlbumTitle(mainDataStructure), getAlbumReleaseYear(mainDataStructure), getImages(searchInput));
-
-  const display = buildDisplay(searchInput, {
-    trackTitle, 
-    artistName, 
-    albumTitle, 
-    releaseYear,
-    coverImage: albumArt.coverImage
+  const display = buildInitialDisplay(searchInput, {
+    title,
+    artist,
+    album,
+    year,
+    coverImage: imageSources.coverImage,
+    trackOrder,
   });
-  
-  return display;  
+
+  return display;
 };
 
 searchButton.addEventListener("click", renderSearchedData);
 
 
 
+/* 
+NEXT TIME:
+
+- get the member data, genre, style in a more info btn
+- sort and favorite functions
+
+
+*/
