@@ -1,5 +1,25 @@
-const input = document.getElementById("searchInput");
-const searchButton = document.getElementById("searchButton");
+const elementsWithIds = ["searchInput","searchButton","mainContainer",
+"resultsCard",
+"resultsList",
+"resultsHeading",
+"trackTitle",
+"artist",
+"album",
+"releaseYear",
+"trackImageContainer",
+"trackListingBtn",
+"moreInfoBtn",
+"coverImg",
+"vinylContainer",
+"description"];
+
+elementsWithIds.forEach(element => window[element] = document.getElementById(element));
+
+const returnPromises = (...promises) => Promise.all(promises);
+
+const shortenProfileDescription = (text, limit = 245) => {
+  return text.length > limit ? text.slice(0, limit) + "..." : text;
+};
 
 const queryConfig = {
   baseURL: "https://api.discogs.com",
@@ -30,7 +50,6 @@ const dataFetcher = (baseConfig) => {
   return fetchFromEndpoint(baseConfig.baseURL);
 };
 
-const returnPromises = (...promises) => Promise.all(promises);
 
 const discogsAPIData = dataFetcher(queryConfig);
 
@@ -44,6 +63,7 @@ const initialDataFetch = async (userInput) => {
   if (results.length === 0) {
     throw new Error("No results found for that search term.");
   }
+  console.log(`I am initial data fetch`);
   console.log(results);
   return results;
 };
@@ -51,36 +71,6 @@ const initialDataFetch = async (userInput) => {
 const getMasterUrl = (initialData) => {
   const masterUrl = `${initialData[0].master_url}?page=1&per_page=1`;
   return masterUrl;
-};
-const dataFromMasterReleaseURL = async (releaseData) => {
-  const data = await discogsAPIData(releaseData);
-  console.log(data);
-  const updatedData = {
-    title: data.title,
-    artist: data.artists[0].name,
-    album: data.title,
-    year: data.year,
-    artistResourceUrl: data.artists[0].resource_url,
-    genre: data.genres,
-    trackOrder: data.tracklist,
-    mainReleaseData: data.main_release_url,
-    recentReleaseData: data.most_recent_release_url,
-    versions: data.versions_url,
-  };
-  console.log(updatedData);
-  return updatedData;
-};
-
-const getSecondaryURLs = (updatedData) => {
-  const { artistResourceUrl, mainReleaseData, recentReleaseData, versions } =
-    updatedData;
-
-  return {
-    artistResourceUrl,
-    mainReleaseData,
-    recentReleaseData,
-    versions,
-  };
 };
 
 const getImages = (initialData) => {
@@ -90,70 +80,121 @@ const getImages = (initialData) => {
   };
 };
 
+const dataFromMasterReleaseURL = async (releaseData) => {
+  const data = await discogsAPIData(releaseData);
+  console.log(`I am master release`);
+  console.log(data);
+  const updatedData = {
+    title: data?.title,
+    artist: data?.artists[0].name,
+    album: data?.title,
+    year: data?.year,
+    genre: data?.genres,
+    style: data?.styles,
+    trackData: data?.tracklist,
+    artistResourceUrl: data?.artists[0].resource_url,
+    mainReleaseData: data?.main_release_url,
+    recentReleaseData: data?.most_recent_release_url,
+    versions: data?.versions_url,
+  };
+  console.log(`I am updatedData`);
+  console.log(updatedData);
+  return updatedData;
+};
+
+const getPrimaryData = (data) => ({
+  title: data.title,
+  artist: data.artist,
+  album: data.title,
+  year: data.year,
+});
+
+const getSecondaryData = (data) => ({
+  genre: data.genre,
+  style: data.style,
+  trackData: data.trackData,
+});
+
+const getAllOtherUrls = (data) => ({
+  artistResourceUrl: data.artistResourceUrl,
+  mainReleaseData: data.mainReleaseData,
+  recentReleaseData: data.recentReleaseData,
+  versions: data.versions,
+});
+
+const createElementUtil = (elem) => document.createElement(elem);
+
+const transFormTrackData = (trackData) => {
+  const tracks = trackData.map(track => {
+    return {
+      position: track.position,
+      title: track.title,
+      duration: track.duration,
+    }
+  })
+
+  return tracks;
+}
+
+const displaySecondaryData = async (trackData, ...data) => {
+  const tracksArray = transFormTrackData(trackData)
+
+  tracksArray.forEach(track => {
+    const trackListItem = createElementUtil("li");
+  trackListItem.classList.add("track-list-item");
+
+  trackListItem.textContent = `${track.position}. ${track.title} - ${track.duration}`
+  resultsList.appendChild(trackListItem);
+  })
+
+  const genreType = data[0].genre.toString();
+  const styleType = data[0].style.toString();
+
+  const typeDescriptions = [genreType, styleType]
+
+  typeDescriptions.forEach(description => {
+    const descriptionItem = createElementUtil("li");
+    descriptionItem.classList.add("description-item");
+
+    if (description === genreType) {
+      descriptionItem.textContent = `Genre: ${genreType}`
+    } else {
+      descriptionItem.textContent = `Style: ${styleType}`
+    }
+
+    resultsList.appendChild(descriptionItem)
+  })
+};
+
+
+
 
 const buildInitialDisplay = (input, data) => {
-  const resultsList = document.getElementById("resultsList");
-  const resultsHeading = document.getElementById("resultsHeading");
-  const coverImage = document.querySelector(".cover-img");
-  resultsHeading.textContent = `You searched: ${input}`
+  resultsHeading.textContent = `You searched: ${input}`;
   resultsList.classList.toggle("active");
+  resultsCard.classList.toggle("active");
+  vinylContainer.classList.toggle("hidden");
 
-  const trackTitle = document.getElementById("trackTitle");
   trackTitle.textContent = `Track Title: ${data.title || "Unknown"}`;
-  
-  const artist = document.getElementById("artist")
   artist.textContent = `Artist: ${data.artist || "Unknown"}`;
-
-  const album = document.getElementById("album");
   album.textContent = `Album: ${data.album || "Unknown"}`;
-
-  const releaseYear = document.getElementById("releaseYear");
   releaseYear.textContent = `Release Year: ${data.year || "Unknown"}`;
 
   coverImage.src = `${data.coverImage}` 
 };
 
-const createTrackListingButton = (trackOrder) => {
-  const button = document.createElement("button");
-  button.classList.add("more-info", "secondary-button");
-  button.textContent = "Show tracklisting";
-  button.addEventListener("click", () => getTrackListing(trackOrder));
-  return button;
-};
 
-const getTrackListing = (trackOrder) => {
-  const container = document.createElement("div");
-  container.classList.add("detailed-info");
-
-  trackOrder.forEach((track) => {
-    const trackDiv = document.createElement("div");
-    trackDiv.innerHTML = `
-      <p><strong>${track.position}:</strong> ${track.title} — ${track.duration}</p>
-    `;
-    container.appendChild(trackDiv);
-  });
-  document.querySelector(".track-card").appendChild(container);
-};
-
-const createMoreInfoButton = (artistResourceUrl) => {
-  return `<button class="more-info secondary-button" data-url="${artistResourceUrl}">Show tracklisting</button>`;
-};
-
-/* const getMoreInfo = async (e) => {
-  const artistResourceUrl = e.target.getAttribute("data-url");
-  if (artistResourceUrl) {
-    const detailedData = await discogsAPIData(artistResourceUrl);
+const getMoreInfo = async (links) => {
+    const detailedData = await discogsAPIData(links);
     console.log(detailedData);
-    const trackOrderData = trackOrderData()
-    displayMoreInfo(e.target, detailedData);
-  } else {
-    console.log("No additional resource available.");
-  }
-}; */
+    displayMoreInfo(detailedData);
+};
 
-const displayMoreInfo = (button, info) => {
-  const { members, profile } = info;
-  const membersDisplay = members.forEach((member, index) => {
+
+
+const displayMoreInfo = (data) => {
+  const { members, profile } = data;
+   members.forEach((member, index) => {
     const detailsDiv = document.createElement("div");
     detailsDiv.classList.add("detailed-info");
 
@@ -162,41 +203,62 @@ const displayMoreInfo = (button, info) => {
       member.name || "No duration provided"
     }</p>
   `;
-    button.parentNode.appendChild(detailsDiv);
+  trackImageContainer.appendChild(detailsDiv);
   });
+  description.innerHTML = `
+    <p> ${shortenProfileDescription(profile || "No profile data")}</p>
+  `;
 };
 
-const renderSearchedData = async (e) => {
+const displayInitialSearch = async (e) => {
   e.preventDefault();
-  const searchInput = input.value.trim();
-  const initialData = await initialDataFetch(searchInput);
+  const input = searchInput.value.trim();
+  const initialData = await initialDataFetch(input);
   const masterUrl = getMasterUrl(initialData);
   const imageSources = getImages(initialData);
-
   const mainData = await dataFromMasterReleaseURL(masterUrl);
-  const { title, artist, album, year, trackOrder } = mainData;
+  const primary = getPrimaryData(mainData);
+  const secondary = getSecondaryData(mainData);
+  const links = getAllOtherUrls(mainData);
+  console.log(secondary);
 
-  const display = buildInitialDisplay(searchInput, {
-    title,
-    artist,
-    album,
-    year,
-    coverImage: imageSources.coverImage,
-    trackOrder,
+  const display = buildInitialDisplay(input, {
+    ...primary,
+    coverImage: imageSources.coverImage
+  });
+  trackListingBtn.addEventListener("click", () => {
+    displaySecondaryData(secondary.trackData, secondary);
   });
 
+  moreInfoBtn.addEventListener("click", async () => {
+    getMoreInfo(links.artistResourceUrl);
+  });
   return display;
 };
 
-searchButton.addEventListener("click", renderSearchedData);
+searchButton.addEventListener("click", displayInitialSearch);
+
 
 
 
 /* 
 NEXT TIME:
-
-- get the member data, genre, style in a more info btn
 - sort and favorite functions
-
-
 */
+
+
+
+
+
+const mainRelease = await discogsAPIData(
+"https://api.discogs.com/releases/377153")
+const recent = await discogsAPIData("https://api.discogs.com/releases/13729613")
+/* const versions = await discogsAPIData(
+  "https://api.discogs.com/masters/92068/versions"
+) */
+//const member = await discogsAPIData('https://api.discogs.com/artists/382230')
+
+//console.log(mainRelease)
+//console.log(recent)
+//console.log(versions)
+//console.log(member)
