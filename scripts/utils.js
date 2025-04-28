@@ -6,7 +6,23 @@ export const shortenProfileDescription = (text, limit = 245) => {
 
 export const createElementUtil = (elem) => document.createElement(elem);
 
-export const addIdsToElements = (array) =>
-  array.forEach(
-    (element) => (window[element] = document.getElementById(element))
-  );
+export const addIdsToElements = (array) => 
+  array.reduce((elements, id) => {
+    const el = document.getElementById(id);
+    if (el) {
+      elements[id] = el;
+    }
+    return elements;
+  }, {});
+
+
+export const resetContainers = (...containers) => {
+  containers.forEach((element) => {
+    element.textContent = "";
+  });
+};
+
+
+export const getUserInput = (input) => input.value.trim();
+
+

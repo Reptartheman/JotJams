@@ -35,32 +35,51 @@
         </div>
 
         <section id="resultsCard" class="results-card">
-            <h2 class="results-heading" id="resultsHeading">
-              Your results will appear below
-            </h2>
+          <div id="frontContent" class="front-content">
+
+          
+            <h2 class="results-heading" id="resultsHeading"></h2>
             <div class="favs-btn">
               <button id="addToFavs" class="secondary-button">
                 Add to favorites
               </button>
+              <div class="see-favs-btn">
+                <button id="seeFavs" class="see-favs secondary-button">
+                  See favorites
+                </button>
+              </div>
             </div>
             <ul id="resultsList" class="results-list">
               <li id="trackTitle" class="results-item"></li>
               <li id="artist" class="results-item"></li>
               <li id="album" class="results-item"></li>
               <li id="releaseYear" class="results-item"></li>
-              <div class="tracklisting-btn-container">
-                <button id="trackListingBtn" class="secondary-button">Show more</button>
+              <button id="trackListingBtn" class="secondary-button">Tracks</button>
+              <div id="trackListingContainer" class="tracklisting-container">
+                
               </div>
             </ul>
             <div id="trackImageContainer" class="track-image-container">
               <img src="" alt="Cover Image" id="coverImage" class="cover-img" />
-              <div class="more-btn-container">
-                <button id="moreInfoBtn" class="secondary-button">Members & Description</button>
+              <div id="moreInfoContainer" class="more-info-container">
+                
               </div>
+              <button id="moreInfoBtn" class="secondary-button">Members & Description</button>
             </div>
             <div id="description" class="profile-description">
 
             </div>
+          </div>
+          <div id="backContent" class="back-content">
+            <div id="backToDataContainer" class="back-to-data-btn">
+               <button id="backToData" class="secondary-button">
+                Back to album info
+               </button>
+            </div>
+            <ul id="favoritesList" class="favorites-list">
+
+            </ul>
+          </div>
         </section>
       </main>
 

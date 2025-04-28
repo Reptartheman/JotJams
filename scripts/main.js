@@ -1,66 +1,62 @@
 import { initialDataFetch, dataFromMasterReleaseURL } from "./api";
 
-import { 
-  getMasterUrl, 
-  getImages, 
-  getPrimaryData, 
-  getSecondaryData, 
-  getAllOtherUrls, 
-  getMoreInfo 
+import {
+  getMasterUrl,
+  getImages,
+  getPrimaryData,
+  getSecondaryData,
+  getAllOtherUrls,
+  getMoreInfo,
 } from "./data";
 
-import { buildInitialDisplay, displaySecondaryData } from "./dom";
+import { renderInitialDisplay, displaySecondaryData, flipCard, addToFavorites, loadFavorites } from "./dom";
+import { getUserInput } from "./utils";
 
+let currentLinks = null;
 
 const displayInitialSearch = async (e) => {
   e.preventDefault();
-  const input = searchInput.value.trim();
+  const input = getUserInput(searchInput);
   const initialData = await initialDataFetch(input);
   const masterUrl = getMasterUrl(initialData);
   const imageSources = getImages(initialData);
   const mainData = await dataFromMasterReleaseURL(masterUrl);
   const primary = getPrimaryData(mainData);
   const secondary = getSecondaryData(mainData);
-  const links = getAllOtherUrls(mainData);
-  console.log(secondary);
-
-  const display = buildInitialDisplay(input, {
+  currentLinks = getAllOtherUrls(mainData);
+  console.log(mainData);
+  const display = renderInitialDisplay(input, {
     ...primary,
-    coverImage: imageSources.coverImage
+    coverImage: imageSources.coverImage,
   });
   trackListingBtn.addEventListener("click", () => {
     displaySecondaryData(secondary.trackData, secondary);
   });
 
-  moreInfoBtn.addEventListener("click", async () => {
-    getMoreInfo(links.artistResourceUrl);
-  });
   return display;
 };
 
 searchButton.addEventListener("click", displayInitialSearch);
 
+moreInfoBtn.addEventListener("click", () => {
+  if (currentLinks) {
+    getMoreInfo(currentLinks.artistResourceUrl);
+  }
+});
+
+
+
+loadFavorites();
+addToFavs.addEventListener("click", addToFavorites);
+seeFavs.addEventListener("click", flipCard);
+backToData.addEventListener("click", flipCard);
 
 
 
 /* 
 NEXT TIME:
+
 - sort and favorite functions
 */
 
 
-
-
-
-/* const mainRelease = await discogsAPIData(
-"https://api.discogs.com/releases/377153") */
-//const recent = await discogsAPIData("https://api.discogs.com/releases/13729613")
-/* const versions = await discogsAPIData(
-  "https://api.discogs.com/masters/92068/versions"
-) */
-//const member = await discogsAPIData('https://api.discogs.com/artists/382230')
-
-//console.log(mainRelease)
-//console.log(recent)
-//console.log(versions)
-//console.log(member)

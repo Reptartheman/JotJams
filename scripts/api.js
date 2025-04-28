@@ -41,15 +41,12 @@ export const initialDataFetch = async (userInput) => {
   if (results.length === 0) {
     throw new Error("No results found for that search term.");
   }
-  console.log(`I am initial data fetch`);
   console.log(results);
   return results;
 };
 
 export const dataFromMasterReleaseURL = async (releaseData) => {
   const data = await discogsAPIData(releaseData);
-  console.log(`I am master release`);
-  console.log(data);
   const updatedData = {
     title: data?.title,
     artist: data?.artists[0].name,
@@ -63,7 +60,21 @@ export const dataFromMasterReleaseURL = async (releaseData) => {
     recentReleaseData: data?.most_recent_release_url,
     versions: data?.versions_url,
   };
-  console.log(`I am updatedData`);
-  console.log(updatedData);
   return updatedData;
 };
+
+/* const versions = await discogsAPIData(
+  "https://api.discogs.com/masters/92068/versions"
+) 
+const mainRelease = await discogsAPIData(
+"https://api.discogs.com/releases/377153")
+const recent = await discogsAPIData("https://api.discogs.com/releases/13729613")
+
+const member = await discogsAPIData('https://api.discogs.com/artists/382230')
+
+console.log(mainRelease)
+console.log(recent)
+console.log(member)
+
+
+console.log(versions) */

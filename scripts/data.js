@@ -14,25 +14,26 @@ export const getImages = (initialData) => {
 };
 
 
-export const getPrimaryData = (data) => ({
-  title: data.title,
-  artist: data.artist,
-  album: data.title,
-  year: data.year,
+export const getPrimaryData = ({ title, artist, year }) => ({
+  title,
+  artist,
+  album: title,
+  year,
 });
 
-export const getSecondaryData = (data) => ({
-  genre: data.genre,
-  style: data.style,
-  trackData: data.trackData,
+export const getSecondaryData = ({ genre, style, trackData }) => ({
+  genre,
+  style,
+  trackData,
 });
 
-export const getAllOtherUrls = (data) => ({
-  artistResourceUrl: data.artistResourceUrl,
-  mainReleaseData: data.mainReleaseData,
-  recentReleaseData: data.recentReleaseData,
-  versions: data.versions,
-});//destruture data instead
+export const getAllOtherUrls = ({ artistResourceUrl, mainReleaseData, recentReleaseData, versions }) => ({
+  artistResourceUrl,
+  mainReleaseData,
+  recentReleaseData,
+  versions,
+});
+
 
 export const getMoreInfo = async (links) => {
   const detailedData = await discogsAPIData(links);
