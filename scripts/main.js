@@ -9,7 +9,7 @@ import {
   getMoreInfo,
 } from "./data";
 
-import { renderInitialDisplay, displaySecondaryData, flipCard, addToFavorites, loadFavorites } from "./dom";
+import { renderInitialDisplay, displaySecondaryData, addToFavorites, loadFavorites } from "./dom";
 import { getUserInput } from "./utils";
 
 let currentLinks = null;
@@ -46,10 +46,8 @@ moreInfoBtn.addEventListener("click", () => {
 
 
 
-loadFavorites();
-addToFavs.addEventListener("click", addToFavorites);
-seeFavs.addEventListener("click", flipCard);
-backToData.addEventListener("click", flipCard);
+//loadFavorites();
+//addToFavs.addEventListener("click", addToFavorites);
 
 
 

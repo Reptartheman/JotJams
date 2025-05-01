@@ -10,7 +10,10 @@
     <div class="app-container">
       <header class="header">
         <div class="speaker-container">
-          <img src="./assets/styles/monitor2FRAMERough-GREEN-B.png" alt="speaker">
+          <img
+            src="./assets/styles/monitor2FRAMERough-GREEN-B.png"
+            alt="speaker"
+          />
         </div>
         <section class="search-section">
           <input
@@ -22,24 +25,62 @@
           <div id="searchButtonContainer" class="search-btn-container">
             <button id="searchButton" class="search-button">Search</button>
           </div>
-          
         </section>
         <div class="speaker-container">
-          <img src="./assets/styles/monitor2FRAMERough-GREEN-B.png" alt="speaker">
+          <img
+            src="./assets/styles/monitor2FRAMERough-GREEN-B.png"
+            alt="speaker"
+          />
         </div>
       </header>
 
       <main id="mainContainer" class="container">
         <div id="vinylContainer" class="vinyl-container">
-          <img id="vinylImg" src="./assets/styles/JJ vinyl.svg" alt="Welcome to Jot Jams">
+          <img
+            id="vinylImg"
+            src="./assets/styles/JJ vinyl.svg"
+            alt="Welcome to Jot Jams"
+          />
         </div>
 
-        <section id="resultsCard" class="results-card">
-          <div id="frontContent" class="front-content">
-
-          
-            <h2 class="results-heading" id="resultsHeading"></h2>
-            <div class="favs-btn">
+        <section id="resultsContainer" class="results-container">
+          <div class="init-results-container">
+            <div class="heading-results">
+              <h2 class="results-heading" id="resultsHeading"></h2>
+              <ul id="resultsList" class="results-list">
+                <li id="trackTitle" class="results-item"></li>
+                <li id="artist" class="results-item"></li>
+                <li id="album" class="results-item"></li>
+                <li id="releaseYear" class="results-item"></li>
+              </ul>
+            </div>
+            <div id="trackImageContainer" class="track-image-container">
+              <img src="" alt="Cover Image" id="coverImage" class="cover-img" />
+            </div>
+          </div>
+          <div class="more-info-btn-container">
+            <button id="trackListingBtn" class="secondary-button">
+              Tracks & Description
+            </button>
+            <button id="moreInfoBtn" class="secondary-button">
+              Members & Summary
+            </button>
+          </div>
+          <div class="tracks-members-lists">
+            <div
+              id="trackListingContainer"
+              class="tracklisting-container"
+            ></div>
+            <div id="moreInfoContainer" class="more-info-container"></div>
+          </div>
+        </section>
+        <section class="additional-info">
+          <div id="description" class="profile-description">
+            
+          </div>
+          <!-- 
+            
+<div class="favs-btn">
               <button id="addToFavs" class="secondary-button">
                 Add to favorites
               </button>
@@ -48,38 +89,7 @@
                   See favorites
                 </button>
               </div>
-            </div>
-            <ul id="resultsList" class="results-list">
-              <li id="trackTitle" class="results-item"></li>
-              <li id="artist" class="results-item"></li>
-              <li id="album" class="results-item"></li>
-              <li id="releaseYear" class="results-item"></li>
-              <button id="trackListingBtn" class="secondary-button">Tracks</button>
-              <div id="trackListingContainer" class="tracklisting-container">
-                
-              </div>
-            </ul>
-            <div id="trackImageContainer" class="track-image-container">
-              <img src="" alt="Cover Image" id="coverImage" class="cover-img" />
-              <div id="moreInfoContainer" class="more-info-container">
-                
-              </div>
-              <button id="moreInfoBtn" class="secondary-button">Members & Description</button>
-            </div>
-            <div id="description" class="profile-description">
-
-            </div>
-          </div>
-          <div id="backContent" class="back-content">
-            <div id="backToDataContainer" class="back-to-data-btn">
-               <button id="backToData" class="secondary-button">
-                Back to album info
-               </button>
-            </div>
-            <ul id="favoritesList" class="favorites-list">
-
-            </ul>
-          </div>
+            </div> -->
         </section>
       </main>
 

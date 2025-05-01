@@ -10,7 +10,7 @@ const elementsWithIds = [
   "searchInput",
   "searchButton",
   "mainContainer",
-  "resultsCard",
+  "resultsContainer",
   "resultsList",
   "resultsHeading",
   "trackTitle",
@@ -25,12 +25,8 @@ const elementsWithIds = [
   "description",
   "addToFavs",
   "seeFavs",
-  "backToData",
   "trackListingContainer",
   "moreInfoContainer",
-  "frontContent",
-  "backContent",
-  "backToDataContainer",
   "favoritesList"
 ];
 
@@ -46,7 +42,7 @@ export const renderInitialDisplay = (input, data) => {
 
   if (!domElements.resultsList.classList.contains("active")) {
     domElements.resultsList.classList.toggle("active");
-    domElements.resultsCard.classList.toggle("active");
+    domElements.resultsContainer.classList.toggle("active");
     domElements.vinylContainer.classList.add("hidden");
   } else {
     resetContainers(domElements.trackListingContainer, domElements.moreInfoContainer, domElements.description);
@@ -69,7 +65,7 @@ const renderTypeDescriptions = ({ genre, style }) => {
     const descriptionItem = createElementUtil("li");
     descriptionItem.classList.add("description-item");
     descriptionItem.textContent = text;
-    domElements.trackListingContainer.appendChild(descriptionItem);
+    domElements.moreInfoContainer.appendChild(descriptionItem);
   });
 };
 
@@ -147,20 +143,3 @@ export const loadFavorites = () => {
   }
 };
 
-
-let isFlipped = false;
-
-export const flipCard = () => {
-  
-  if (!isFlipped) {
-    domElements.resultsCard.style.transform = "rotateY(180deg)";
-    domElements.backContent.style.display = "grid";
-    domElements.frontContent.style.display = "none";
-  } else {
-    domElements.resultsCard.style.transform = "rotateY(0deg)";
-    domElements.frontContent.style.display = "grid";
-    domElements.backContent.style.display = "none";
-  }
-
-  isFlipped = !isFlipped;
-};
