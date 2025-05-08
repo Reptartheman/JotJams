@@ -9,7 +9,7 @@ import {
   getMoreInfo,
 } from "./data";
 
-import { renderInitialDisplay, displaySecondaryData, addToFavorites, loadFavorites } from "./dom";
+import { renderInitialDisplay, displaySecondaryData, renderVersions, addToFavorites, loadFavorites } from "./dom";
 import { getUserInput } from "./utils";
 
 let currentLinks = null;
@@ -32,7 +32,7 @@ const displayInitialSearch = async (e) => {
   trackListingBtn.addEventListener("click", () => {
     displaySecondaryData(secondary.trackData, secondary);
   });
-
+  renderVersions(initialData)
   return display;
 };
 
@@ -40,7 +40,7 @@ searchButton.addEventListener("click", displayInitialSearch);
 
 moreInfoBtn.addEventListener("click", () => {
   if (currentLinks) {
-    getMoreInfo(currentLinks.artistResourceUrl);
+    getMoreInfo(currentLinks.artistResourceUrl); 
   }
 });
 

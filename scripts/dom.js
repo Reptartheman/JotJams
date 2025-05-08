@@ -27,7 +27,10 @@ const elementsWithIds = [
   "seeFavs",
   "trackListingContainer",
   "moreInfoContainer",
-  "favoritesList"
+  "favoritesList",
+  "tracksMembersLists",
+  "additionalReleases",
+  "additionalReleasesList"
 ];
 
 const domElements = addIdsToElements(elementsWithIds);
@@ -65,7 +68,7 @@ const renderTypeDescriptions = ({ genre, style }) => {
     const descriptionItem = createElementUtil("li");
     descriptionItem.classList.add("description-item");
     descriptionItem.textContent = text;
-    domElements.moreInfoContainer.appendChild(descriptionItem);
+    domElements.trackListingContainer.appendChild(descriptionItem);
   });
 };
 
@@ -94,6 +97,21 @@ const renderProfileDescription = ({ profile }) => {
   domElements.description.appendChild(descriptionText);
 };
 
+export const renderVersions = (data) => {
+   data.forEach((item, index) => {
+    const listItem = createElementUtil("li");
+    const albumArt = createElementUtil("img");
+    albumArt.src = item.cover_image || "";
+   listItem.classList.add("version");
+   listItem.id = `version-${index}`;
+   listItem.innerHTML = `<span>Title: ${item.title}</span><br>
+   <span>Release: ${item.type === "release" ? "Single or EP": item.type}</span><br>
+   <span>Year: ${item.year || "Unknown"}</span>`;
+   listItem.appendChild(albumArt);
+   domElements.additionalReleasesList.appendChild(listItem);
+   })
+}
+
 
 export const displaySecondaryData = async (trackData, secondaryData) => {
   resetContainers(domElements.trackListingContainer);
@@ -107,7 +125,9 @@ export const displaySecondaryData = async (trackData, secondaryData) => {
 export const displayMoreInfo = (data) => {
   resetContainers(domElements.moreInfoContainer, domElements.description);
   renderMembers(data);
+  domElements.tracksMembersLists.classList.toggle('initial')
   renderProfileDescription(data);
+  
 };
 
 export const addToFavorites = () => {

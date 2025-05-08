@@ -7,7 +7,7 @@
     <link rel="stylesheet" href="./assets/styles/styles.css" />
   </head>
   <body>
-    <div class="app-container">
+
       <header class="header">
         <div class="speaker-container">
           <img
@@ -34,7 +34,7 @@
         </div>
       </header>
 
-      <main id="mainContainer" class="container">
+      <main id="mainContainer" class="app-container">
         <div id="vinylContainer" class="vinyl-container">
           <img
             id="vinylImg"
@@ -43,7 +43,7 @@
           />
         </div>
 
-        <section id="resultsContainer" class="results-container">
+        <section id="resultsContainer" class="results-container card">
           <div class="init-results-container">
             <div class="heading-results">
               <h2 class="results-heading" id="resultsHeading"></h2>
@@ -58,29 +58,34 @@
               <img src="" alt="Cover Image" id="coverImage" class="cover-img" />
             </div>
           </div>
-          <div class="more-info-btn-container">
-            <button id="trackListingBtn" class="secondary-button">
-              Tracks & Description
-            </button>
-            <button id="moreInfoBtn" class="secondary-button">
-              Members & Summary
-            </button>
+         
+          <div id="tracksMembersLists" class="tracks-members-lists initial">
+
+              <div id="trackListingContainer" class="tracklisting-container">
+                <button id="trackListingBtn" class="secondary-button">
+                  Tracks & Description
+                </button>
+              </div>
+              <div id="moreInfoContainer" class="more-info-container">
+                <button id="moreInfoBtn" class="secondary-button">
+                  Members & Summary
+                </button>
+              </div>
+
+            
           </div>
-          <div class="tracks-members-lists">
-            <div
-              id="trackListingContainer"
-              class="tracklisting-container"
-            ></div>
-            <div id="moreInfoContainer" class="more-info-container"></div>
-          </div>
-        </section>
-        <section class="additional-info">
           <div id="description" class="profile-description">
             
           </div>
-          <!-- 
-            
-<div class="favs-btn">
+            <!-- <div id="additionalRelease" class="additional-releases">
+              <ul id="additionalReleasesList" class="additional-releases-list">
+  
+              </ul>
+            </div> -->
+        </section>
+        
+      </main>
+<!-- <div class="favs-btn">
               <button id="addToFavs" class="secondary-button">
                 Add to favorites
               </button>
@@ -90,13 +95,10 @@
                 </button>
               </div>
             </div> -->
-        </section>
-      </main>
-
       <footer class="footer">
         <p>&copy; 2025 Jot Jams. All rights reserved. Powered by Discogs API</p>
       </footer>
-    </div>
+
     <script type="module" src="./scripts/main.js"></script>
   </body>
 </html>

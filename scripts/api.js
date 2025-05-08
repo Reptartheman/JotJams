@@ -34,7 +34,7 @@ export const discogsAPIData = dataFetcher(queryConfig);
 export const initialDataFetch = async (userInput) => {
   const query = `/database/search?q=${encodeURIComponent(userInput)}&key=${
     queryConfig.key
-  }&secret=${queryConfig.secret}&page=1&per_page=1`;
+  }&secret=${queryConfig.secret}&page=1&per_page=16`;
   const data = await discogsAPIData(query);
   const results = data?.results || [];
 
