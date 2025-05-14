@@ -1,164 +1,60 @@
-const input = document.getElementById("searchInput");
-const artistInput = document.getElementById("artistInput");
-const trackInput = document.getElementById("trackInput");
-const searchButton = document.getElementById("searchButton");
-const randomButton = document.getElementById("randomSearchButton");
-const getRandomItem = (arr) => arr[Math.floor(Math.random() * arr.length)];
-const getRandomNumber = (min, max) =>
-  Math.floor(Math.random() * (max - min) + min);
+import { initialDataFetch, dataFromMasterReleaseURL } from "./api";
 
-const queryConfig = {
-  baseURL: "https://api.discogs.com",
-  key: "jIsWwEpLHMbcjqlQQSea",
-  secret: "cUgaJgZJhrLgLKxattfmUZscPaUBDrcF",
-};
+import {
+  getMasterUrl,
+  getImages,
+  getPrimaryData,
+  getSecondaryData,
+  getAllOtherUrls,
+  getMoreInfo,
+} from "./data";
 
-const dataFetcher = (baseConfig) => {
-  const fetchFromURL = async (url) => {
-    try {
-      const response = await fetch(url);
-      return await response.json();
-    } catch (err) {
-      console.error("Error fetching data:", err);
-      return null;
-    }
-  };
+import { renderInitialDisplay, displaySecondaryData, renderVersions, addToFavorites, loadFavorites } from "./dom";
+import { getUserInput } from "./utils";
 
-  const fetchFromEndpoint = (endpoint) => {
-    const url = endpoint.startsWith("http")
-      ? endpoint // if true: use full URL as is
-      : `${baseConfig.baseURL}${endpoint}`;  // if false: combine base + endpoint
-    return fetchFromURL(url);
-  };
+let currentLinks = null;
 
-  return {
-    fetch: fetchFromEndpoint,
-  };
-};
-
-function capitalizeFirstLetter(str) {
-  if (!str) return "";
-  return str.charAt(0).toUpperCase() + str.slice(1);
-}
-
-const discogsAPI = dataFetcher(queryConfig);
-
-const getRandomData = async () => {
-  const searchTypes = ["artist", "master", "label", "release"];
-  const searchType = getRandomItem(searchTypes);
-  const randomPageNumber = getRandomNumber(1, 100);
-  const query = `/database/search?&type=${searchType}&key=${queryConfig.key}&secret=${queryConfig.secret}&page=${randomPageNumber}&per_page=1`;
-  const data = await discogsAPI.fetch(query);
-  return data?.results || [];
-};
-
-const getSearchedArtist = async (trackTitle = "", artistName = "") => {
-  const query = `/database/search?q=${encodeURIComponent(
-    trackTitle
-  )}+${encodeURIComponent(artistName)}&key=${queryConfig.key}&secret=${
-    queryConfig.secret
-  }&page=1&per_page=1`;
-  const data = await discogsAPI.fetch(query);
-  return data?.results || [];
-};
-
-const initialReleaseDisplay = (data) => {
-  return `<li class="results-item">Release Title: ${
-    data.title || "Unknown"
-  }</li>
-  <li class="results-item">Release Year: ${data.year || "Unknown"}</li>
-  <li class="results-item">Genre: ${data.genre || "Unknown"}</li>
-  <img src="${data.thumb || data.cover_image}" alt="Track Thumbnail" />`;
-};
-const initialArtistDisplay = (data) => {
-  return `<li class="results-item">Artist name: ${data.title || "Unknown"}</li>
-  <img src="${data.thumb || data.cover_image}" alt="Track Thumbnail" />`;
-};
-const initialLabelDisplay = (data) => {
-  return `<li class="results-item">Label name: ${data.title || "Unknown"}</li>
-  <img src="${data.thumb || data.cover_image}" alt="Track Thumbnail" />`;
-};
-
-const displayHandlers = {
-  master: initialReleaseDisplay,
-  release: initialReleaseDisplay,
-  artist: initialArtistDisplay,
-  label: initialLabelDisplay,
-};
-
-const createMoreInfoButton = (index, resourceUrl) => `
-  <button class="more-info secondary-button" data-index="${index}" data-url="${resourceUrl}">
-    More info
-  </button>
-`;
-
-const displayTrackInfo = async (dataArray, input) => {
-  const resultsList = document.getElementById("resultsList");
-  const resultsHeading = document.getElementById("resultsHeading");
-  resultsList.innerHTML = "";
-  resultsHeading.textContent = `Your search results ${input}`;
-
-  let resultsHTML = "";
-  dataArray.forEach((data, index) => {
-    const displayHandler =
-      displayHandlers[data.type] ||
-      (() => `<li class="results-item">No relevant data</li>`);
-
-    resultsHTML += `
-    <div class="result-item">
-      ${displayHandler(data)}
-      ${createMoreInfoButton(index, data.resource_url)}
-    </div>
-  `;
-
-    resultsList.innerHTML = resultsHTML;
-    document.querySelectorAll(".more-info").forEach((button) => {
-      button.addEventListener("click", getMoreInfo);
-    });
+const displayInitialSearch = async (e) => {
+  e.preventDefault();
+  const input = getUserInput(searchInput);
+  const initialData = await initialDataFetch(input);
+  const masterUrl = getMasterUrl(initialData);
+  const imageSources = getImages(initialData);
+  const mainData = await dataFromMasterReleaseURL(masterUrl);
+  const primary = getPrimaryData(mainData);
+  const secondary = getSecondaryData(mainData);
+  currentLinks = getAllOtherUrls(mainData);
+  console.log(mainData);
+  const display = renderInitialDisplay(input, {
+    ...primary,
+    coverImage: imageSources.coverImage,
   });
+  trackListingBtn.addEventListener("click", () => {
+    displaySecondaryData(secondary.trackData, secondary);
+  });
+  renderVersions(initialData)
+  return display;
 };
 
-const getMoreInfo = async (e) => {
-  const resourceUrl = e.target.getAttribute("data-url");
-  if (resourceUrl) {
-    const detailedData = await discogsAPI.fetch(resourceUrl);
-    console.log("Detailed Data:", detailedData);
-    displayMoreInfo(e.target, detailedData);
-  } else {
-    console.log("No additional resource available.");
+searchButton.addEventListener("click", displayInitialSearch);
+
+moreInfoBtn.addEventListener("click", () => {
+  if (currentLinks) {
+    getMoreInfo(currentLinks.artistResourceUrl); 
   }
-};
+});
 
-const displayMoreInfo = (button, info) => {
-  const artistDescription = info.profile || "No additional info available";
-  const full = info.realname || "Unknown";
 
-  const detailsDiv = document.createElement("div");
-  detailsDiv.classList.add("detailed-info");
-  detailsDiv.innerHTML = `
-    <h3>Additional details</h3>
-    <p><strong>Full name:</strong> ${full}</p>
-    <p><strong>Profile:</strong> ${artistDescription}</p>
-  `;
 
-  button.parentNode.appendChild(detailsDiv);
-};
+//loadFavorites();
+//addToFavs.addEventListener("click", addToFavorites);
 
-const renderRandomData = async (e) => {
-  e.preventDefault();
-  const randomItem = await getRandomData();
-  console.log(randomItem);
-  return displayTrackInfo(randomItem, "");
-};
 
-const renderSearchedData = async (e) => {
-  e.preventDefault();
-  const artistName = artistInput.value.trim();
-  const trackTitle = trackInput.value.trim();
-  const searchedItem = await getSearchedArtist(trackTitle, artistName);
-  const trackAndArtist = `${trackTitle} by ${artistName} `;
-  return displayTrackInfo(searchedItem, trackAndArtist);
-};
 
-randomButton.addEventListener("click", renderRandomData);
-searchButton.addEventListener("click", renderSearchedData);
+/* 
+NEXT TIME:
+
+- sort and favorite functions
+*/
+
+

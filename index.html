@@ -1,44 +1,105 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Jot Jams</title>
-    <link rel="stylesheet" href="./assets/styles/styles.css">
-</head>
-<body class="master-grid">
-    <div class="app-container">
-    <header class="header">
-        <h1>Jot Jams</h1>
-        <p>Jot down your favorites!</p>
-    </header>
+    <link rel="stylesheet" href="./assets/styles/styles.css" />
+  </head>
+  <body>
 
-    <main class="container">
-        <section class="search-section">
-            <input class="search-bar" type="text" id="trackInput" placeholder="Enter song name" />
-            <input class="search-bar" type="text" id="artistInput" placeholder="Enter artist name" />
-            <div id="searchButtonContainer" class="search-btn-container">
-                <button id="searchButton" class="search-button">Search</button>
-            <button id="randomSearchButton" class="search-button">Random</button>
+      <header class="header">
+        <div class="speaker-container">
+          <img
+            src="./assets/styles/monitor2FRAMERough-GREEN-B.png"
+            alt="speaker"
+          />
+        </div>
+        <section class="search-section ">
+          <input
+            class="search-bar"
+            type="text"
+            id="searchInput"
+            placeholder="Song and artist name"
+          />
+          <div id="searchButtonContainer" class="search-btn-container">
+            <button id="searchButton" class="search-button">Search</button>
+          </div>
+        </section>
+        <div class="speaker-container">
+          <img
+            src="./assets/styles/monitor2FRAMERough-GREEN-B.png"
+            alt="speaker"
+          />
+        </div>
+      </header>
+
+      <main id="mainContainer" class="app-container">
+        <div id="vinylContainer" class="vinyl-container">
+          <img
+            id="vinylImg"
+            src="./assets/styles/JJ vinyl.svg"
+            alt="Welcome to Jot Jams"
+          />
+        </div>
+
+        <section id="resultsContainer" class="results-container card">
+          <div class="init-results-container">
+            <div class="heading-results inner-data-container">
+              <h2 class="results-heading" id="resultsHeading"></h2>
+              <ul id="resultsList" class="results-list">
+                <li id="trackTitle" class="results-item"></li>
+                <li id="artist" class="results-item"></li>
+                <li id="album" class="results-item"></li>
+                <li id="releaseYear" class="results-item"></li>
+              </ul>
             </div>
-        </section>
- 
-          
+            <div id="trackImageContainer" class="track-image-container inner-data-container">
+              <img src="" alt="Cover Image" id="coverImage" class="cover-img" />
+            </div>
+          </div>
+         <div class="section-divider"></div>
+          <div id="tracksMembersLists" class="tracks-members-lists initial">
 
-        <section class="results-container">
-            <h2 class="results-heading" id="resultsHeading">Enter a song and artist name, or click Random.</h2>
-                <ul id="resultsList" class="results">
-                    
-                </ul>
-        </section>
+              <ul id="trackListingContainer" class="tracklisting-container inner-data-container">
+                <button id="trackListingBtn" class="secondary-button">
+                  Tracks & Description
+                </button>
+              </ul>
+              <ul id="moreInfoContainer" class="more-info-container inner-data-container">
+                <button id="moreInfoBtn" class="secondary-button">
+                  Members & Summary
+                </button>
+              </ul>
 
+            
+          </div>
+          <div class="section-divider"></div>
+          <div id="description" class="profile-description">
+            
+          </div>
+            <!-- <div id="additionalRelease" class="additional-releases">
+              <ul id="additionalReleasesList" class="additional-releases-list">
+  
+              </ul>
+            </div> -->
+        </section>
         
-    </main>
+      </main>
+<!-- <div class="favs-btn">
+              <button id="addToFavs" class="secondary-button">
+                Add to favorites
+              </button>
+              <div class="see-favs-btn">
+                <button id="seeFavs" class="see-favs secondary-button">
+                  See favorites
+                </button>
+              </div>
+            </div> -->
+      <footer class="footer">
+        <p>&copy; 2025 Jot Jams. All rights reserved. Powered by Discogs API</p>
+      </footer>
 
-    <footer class="footer">
-        <p>&copy; 2025 Jot Jams. All rights reserved.</p>
-    </footer>
-</div>
     <script type="module" src="./scripts/main.js"></script>
-</body>
+  </body>
 </html>
