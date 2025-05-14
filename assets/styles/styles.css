@@ -36,7 +36,10 @@
   box-sizing: border-box;
 }
 
-html {
+html, body {
+  height: 100%;
+  margin: 0;
+  padding: 0;
   scroll-behavior: smooth;
 }
 
@@ -48,8 +51,8 @@ body {
   font-family: var(--main-font);
   background-color: #f9f9f9;
   color: #333;
-  width: var(--main-width);
-  height: var(--main-height);
+  display: flex;
+  flex-direction: column;
 }
 
 
@@ -59,9 +62,6 @@ li {
   list-style-type: none;
 }
 
-img {
-  max-width: 75%;
-}
 
 .card {
   background: #fff;
@@ -71,28 +71,47 @@ img {
   padding-bottom: var(--size-20);
 }
 
+div.section-divider {
+  position: relative;
+  left: var(--size-80);
+  border: 0.5px solid black;
+  width: 80%;
+}
 
 /* -----------------------------------HEADER CONTENT------------------------------- */
 header {
-  grid-area: Header;
   display: flex;
   align-items: center;
+  justify-content: space-evenly;
   background-color: #6200ea;
   color: #fff;
+}
+
+main {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  padding: 0 var(--size-30);
+}
+
+footer {
   text-align: center;
-  justify-content: space-evenly;
+  padding: 10px;
+  background-color: #6200ea;
+  color: #fff;
 }
 
 .speaker-container {
-  display: flex;
+  max-width: max-content;
 }
 
 .speaker-container img {
-  width: var(--size-120);
+  max-width: 20%;
 }
+
 .search-section {
-  align-self: center;
   display: flex;
+  flex-wrap: wrap;
   justify-content: center;
 }
 
@@ -145,9 +164,8 @@ header {
 
 /* -----------------------------------MAIN CONTENT------------------------------- */
 .app-container {
-  padding: 0px var(--size-30);
-  width: clamp(65vw, 70vw, 71vw);
-  justify-self: center;
+  display: flex;
+  flex-direction: column;
 }
 /* ------------------vinyl------------- */
 .vinyl-container {
@@ -165,7 +183,7 @@ header {
 
 .results-container,
 .additional-info {
-  margin: var(--size-20) 0px;
+  margin: var(--size-20) 0;
   padding-bottom: var(--size-16);
 }
 
@@ -179,18 +197,6 @@ header {
   display: flex;
   flex-direction: column;
   gap: var(--size-20);
-  /* display: grid; 
-  grid-template-columns: repeat(2, 1fr); 
-  grid-template-rows: repeat(5, min-content);
- 
-  
-  grid-template-areas: 
-    "init-search init-search"
-    "btns btns"
-    "tracks-members tracks-members"
-    "description description"
-    "additional-releases additional-releases";;  */
-  
 }
 
 .init-results-container {
@@ -198,6 +204,16 @@ header {
   display: flex;
   justify-content: center;
   gap: var(--size-40);
+}
+
+.inner-data-container {
+  width: 50%;
+}
+
+ul.inner-data-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 }
 
 .heading-results {
@@ -228,15 +244,19 @@ header {
 }
 
 .results-item {
-  font-size: var(--size-16);
+  font-size: var(--size-26);
 }
 
 .track-image-container {
   display: flex;
+  align-items: center;
   justify-content: center;
   flex-direction: column;
-  align-items: flex-end;
   padding: var(--size-10);
+}
+
+.cover-img {
+  max-width: 75%;
 }
 
 /* results end */
@@ -249,27 +269,18 @@ header {
   align-items: center;
 }
 
-.tracks-members-lists.initial, .tracks-members-lists {
-  grid-area: tracks-members;
-}
-
-.tracklist {
-  grid-area: tracklist;
-}
-
-.members-credits {
-  grid-area: members-credits;
-}
 /* more info end */
+
+.track-list-item, .description-item, .detailed-info {
+  font-size: var(--size-20);
+}
 
 
 .profile-description {
-  padding: var(--size-40);
-  grid-area: description;
+  padding: var(--size-10);
 }
 
 .profile-description p {
-  font-size: var(--size-20);
   text-align: center;
 }
 
@@ -286,39 +297,7 @@ header {
   grid-area: additional-releases;
 }
 
-.version {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  flex-direction: column;
-  padding: var(--size-10);
-  gap: 1px;
-}
 
-.version-1 {
-  grid-area: version1;
-}
-.version-2 {
-  grid-area: version2;
-}
-.version-3 {
-  grid-area: version3;
-}
-.version-4 {
-  grid-area: version4;
-}
-.version-5 {
-  grid-area: version5;
-}
-.version-6 {
-  grid-area: version6;
-}
-.version-7 {
-  grid-area: version7;
-}
-.version-8 {
-  grid-area: version8;
-}
 
 .add-see-favs {
   grid-area: add-see-favs;
@@ -329,21 +308,11 @@ header {
   flex-direction: column;
 }
 
-footer {
-  grid-area: footer;
-  text-align: center;
-  padding: 10px;
-  background-color: #6200ea;
-  color: #fff;
-}
+
 
 /* Make sure the expanded content is responsive */
 @media (max-width: 768px) {
-  .expanded-info {
-    padding: 10px;
-  }
-
-  .info-section {
-    margin-bottom: 15px;
+  .search-bar {
+    font-size: var(--size-10);
   }
 }

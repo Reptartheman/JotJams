@@ -36,7 +36,7 @@ const elementsWithIds = [
 const domElements = addIdsToElements(elementsWithIds);
 
 export const renderInitialDisplay = (input, data) => {
-  domElements.resultsHeading.textContent = `You searched: ${input}`;
+  domElements.resultsHeading.textContent = `Results for: ${input}`;
   domElements.trackTitle.textContent = `Track Title: ${data.title || "Unknown"}`;
   domElements.artist.textContent = `Artist: ${data.artist || "Unknown"}`;
   domElements.album.textContent = `Album: ${data.album || "Unknown"}`;
