@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>See More - Jot Jams</title>
+  <link rel="stylesheet" href="./assets/styles/styles.css" />
+</head>
+<body>
+  <header class="header">
+    <h1 style="text-align: center; padding: 10px;">🎵 More Info</h1>
+    <div class="search-btn-container">
+      <button id="backToSearch" class="secondary-button">← Back to Search</button>
+    </div>
+  </header>
+
+  <main id="moreContainer" class="more-container">
+    <section class="versions-section">
+      <h2>Versions</h2>
+      <ul id="additionalReleasesList" class="additional-releases-list"></ul>
+    </section>
+    
+    <section class="info-section">
+      <h2>Details</h2>
+      <div id="description" class="profile-description"></div>
+      <ul id="membersList" class="inner-data-container"></ul>
+      <ul id="trackListingContainer" class="inner-data-container"></ul>
+    </section>
+  </main>
+
+  <footer class="footer">
+    <p>&copy; 2025 Jot Jams. All rights reserved.</p>
+  </footer>
+
+  <script type="module" src="./scripts/more.js"></script>
+</body>
+</html>

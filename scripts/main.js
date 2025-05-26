@@ -9,7 +9,7 @@ import {
   getMoreInfo,
 } from "./data";
 
-import { renderInitialDisplay, displaySecondaryData, renderVersions, addToFavorites, loadFavorites } from "./dom";
+import { renderInitialDisplay, displaySecondaryData, addToFavorites, domElements } from "./dom";
 import { getUserInput } from "./utils";
 
 let currentLinks = null;
@@ -24,30 +24,27 @@ const displayInitialSearch = async (e) => {
   const primary = getPrimaryData(mainData);
   const secondary = getSecondaryData(mainData);
   currentLinks = getAllOtherUrls(mainData);
-  console.log(mainData);
+  console.log(secondary);
   const display = renderInitialDisplay(input, {
     ...primary,
     coverImage: imageSources.coverImage,
   });
-  trackListingBtn.addEventListener("click", () => {
-    displaySecondaryData(secondary.trackData, secondary);
-  });
-  renderVersions(initialData)
-  return display;
-};
-
-searchButton.addEventListener("click", displayInitialSearch);
-
-moreInfoBtn.addEventListener("click", () => {
+  domElements.seeMoreBtn.addEventListener("click", () => {
   if (currentLinks) {
-    getMoreInfo(currentLinks.artistResourceUrl); 
+    localStorage.setItem("seeMoreLinks", JSON.stringify(currentLinks));
+    window.location.href = "more.html";
   }
 });
 
+  return display;
+};
 
+domElements.searchButton.addEventListener("click", displayInitialSearch);
+domElements.seeFavs.addEventListener("click", () => {
+  window.location.href = "favs.html";
+});
 
-//loadFavorites();
-//addToFavs.addEventListener("click", addToFavorites);
+domElements.addToFavs.addEventListener("click", addToFavorites);
 
 
 
