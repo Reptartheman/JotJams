@@ -65,16 +65,22 @@ export const dataFromMasterReleaseURL = async (releaseData) => {
 
 /* const versions = await discogsAPIData(
   "https://api.discogs.com/masters/92068/versions"
-) 
+)
+
+console.log(versions)
+
 const mainRelease = await discogsAPIData(
 "https://api.discogs.com/releases/377153")
+
+console.log(mainRelease)
+
 const recent = await discogsAPIData("https://api.discogs.com/releases/13729613")
 
 const member = await discogsAPIData('https://api.discogs.com/artists/382230')
 
-console.log(mainRelease)
+
 console.log(recent)
-console.log(member)
+console.log(member) */
 
 
-console.log(versions) */
+

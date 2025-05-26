@@ -25,6 +25,7 @@ const elementsWithIds = [
   "description",
   "addToFavs",
   "seeFavs",
+  "seeMoreBtn",
   "trackListingContainer",
   "moreInfoContainer",
   "favoritesList",
@@ -35,7 +36,7 @@ const elementsWithIds = [
 
 const domElements = addIdsToElements(elementsWithIds);
 
-export const renderInitialDisplay = (input, data) => {
+const renderInitialDisplay = (input, data) => {
   domElements.resultsHeading.textContent = `Results for: ${input}`;
   domElements.trackTitle.textContent = `Track Title: ${data.title || "Unknown"}`;
   domElements.artist.textContent = `Artist: ${data.artist || "Unknown"}`;
@@ -46,6 +47,7 @@ export const renderInitialDisplay = (input, data) => {
   if (!domElements.resultsList.classList.contains("active")) {
     domElements.resultsList.classList.toggle("active");
     domElements.resultsContainer.classList.toggle("active");
+    //domElements.addToFavs.classList.toggle("active");
     domElements.vinylContainer.classList.add("hidden");
   } else {
     resetContainers(domElements.trackListingContainer, domElements.moreInfoContainer, domElements.description);
@@ -97,7 +99,7 @@ const renderProfileDescription = ({ profile }) => {
   domElements.description.appendChild(descriptionText);
 };
 
-export const renderVersions = (data) => {
+/* export const renderVersions = (data) => {
    data.forEach((item, index) => {
     const listItem = createElementUtil("li");
     const albumArt = createElementUtil("img");
@@ -110,10 +112,10 @@ export const renderVersions = (data) => {
    listItem.appendChild(albumArt);
    domElements.additionalReleasesList.appendChild(listItem);
    })
-}
+} */
 
 
-export const displaySecondaryData = async (trackData, secondaryData) => {
+const displaySecondaryData = async (trackData, secondaryData) => {
   resetContainers(domElements.trackListingContainer);
   
   const tracksArray = transFormTrackData(trackData);
@@ -122,7 +124,7 @@ export const displaySecondaryData = async (trackData, secondaryData) => {
 };
 
 
-export const displayMoreInfo = (data) => {
+const displayMoreInfo = (data) => {
   resetContainers(domElements.moreInfoContainer, domElements.description);
   renderMembers(data);
   domElements.tracksMembersLists.classList.toggle('initial')
@@ -130,36 +132,43 @@ export const displayMoreInfo = (data) => {
   
 };
 
-export const addToFavorites = () => {
+const addToFavorites = () => {
   const songName = domElements.trackTitle.textContent.slice(13);
   const artistName = domElements.artist.textContent.slice(8);
   const favsDescription = `${artistName} ${songName}`;
-
+  const originalText = addToFavs.textContent;
   let favs = JSON.parse(localStorage.getItem('favs')) || [];
   
   if (!favs.includes(favsDescription)) {
     favs.push(favsDescription);
     localStorage.setItem('favs', JSON.stringify(favs));
-    createFavContainerItem([favsDescription]);
+    domElements.addToFavs.textContent = "Added!"
+    domElements.addToFavs.classList.add("added");
+    domElements.addToFavs.disabled = true;
+
+    setTimeout(() => {
+      domElements.addToFavs.textContent = originalText;
+      domElements.addToFavs.classList.remove("added");
+      domElements.addToFavs.disabled = false;
+    }, 1000); 
+  } else if (favs.includes(favsDescription)) {
+    domElements.addToFavs.textContent = 'Already in Favorites!';
+    domElements.addToFavs.classList.add("already-there");
+    domElements.addToFavs.disabled = true;
+    setTimeout(() => {
+      domElements.addToFavs.textContent = originalText;
+      domElements.addToFavs.classList.remove("already-there");
+      domElements.addToFavs.disabled = false;
+    }, 1000);
   }
 }
 
-const createFavContainerItem = (array) => {
-  array.forEach((item, index) => {
-    const newFav = createElementUtil("li");
-    newFav.classList.add("fav");
-    newFav.textContent = `${index + 1}. ${item}`;
-    domElements.favoritesList.appendChild(newFav);
-  });
-};
 
-
-
-export const loadFavorites = () => {
-  const savedFavorites = JSON.parse(localStorage.getItem('favs')) || [];
-
-  if (savedFavorites.length > 0) {
-    createFavContainerItem(savedFavorites);
-  }
+export {
+  renderInitialDisplay,
+  displaySecondaryData,
+  displayMoreInfo,
+  addToFavorites,
+  domElements,
 };
 
