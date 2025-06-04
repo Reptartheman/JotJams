@@ -1,10 +1,8 @@
 import {
   addIdsToElements,
-  shortenProfileDescription,
-  createElementUtil,
   resetContainers,
+  createElementUtil
 } from "./utils";
-import { transFormTrackData } from "./data";
 
 const elementsWithIds = [
   "searchInput",
@@ -31,7 +29,8 @@ const elementsWithIds = [
   "favoritesList",
   "tracksMembersLists",
   "additionalReleases",
-  "additionalReleasesList"
+  "additionalReleasesList",
+  "versionsGrid"
 ];
 
 const domElements = addIdsToElements(elementsWithIds);
@@ -54,83 +53,31 @@ const renderInitialDisplay = (input, data) => {
   }
 };
 
-const renderTrackList = (tracks) => {
-  tracks.forEach(({ position, title, duration }) => {
-    const trackListItem = createElementUtil("li");
-    trackListItem.classList.add("track-list-item");
-    trackListItem.textContent = `${position}. ${title} - ${duration}`;
-    domElements.trackListingContainer.appendChild(trackListItem);
-  });
-};
+export const renderVersions = (data) => {
+  //domElements.versionsGrid.innerHTML = ""; // clear old entries
+  data.forEach((item, index) => {
+    const li = createElementUtil("li");
+    li.classList.add("version");
+    li.id = `version${index}`;
+    li.style.gridArea = `version${index + 1}`;
 
-const renderTypeDescriptions = ({ genre, style }) => {
-  const descriptions = [`Genre: ${genre}`, `Style: ${style}`];
-
-  descriptions.forEach((text) => {
-    const descriptionItem = createElementUtil("li");
-    descriptionItem.classList.add("description-item");
-    descriptionItem.textContent = text;
-    domElements.trackListingContainer.appendChild(descriptionItem);
-  });
-};
-
-const renderMembers = ({ members }) => {
-  if(!members) {
-    return domElements.moreInfoContainer.innerHTML = `
-      <p> No member info provided </p>
+    // render text info
+    li.innerHTML = `
+      <span>Title: ${item.title}</span>
+      <span>Release: ${item.type === "release" ? "Single or EP" : item.type}</span>
+      <span>Year: ${item.year || "Unknown"}</span>
     `;
-  };
-  members.forEach((member, index) => {
-    const detailsItem = createElementUtil("li");
-    detailsItem.classList.add("detailed-info");
 
-    detailsItem.textContent = `${index + 1}. ${
-      member?.name || "No members provided"
-    }`;
-    domElements.moreInfoContainer.appendChild(detailsItem);
+    // append cover image (now available)
+    const img = createElementUtil("img");
+    img.src = item.cover_image || item.thumb || "";
+    img.alt = `Cover art for ${item.title}`;
+    li.appendChild(img);
+
+    domElements.versionsGrid.appendChild(li);
   });
 };
 
-const renderProfileDescription = ({ profile }) => {
-  const descriptionText = createElementUtil("p");
-  descriptionText.textContent = `${shortenProfileDescription(
-    profile || "No profile data"
-  )}`;
-  domElements.description.appendChild(descriptionText);
-};
-
-/* export const renderVersions = (data) => {
-   data.forEach((item, index) => {
-    const listItem = createElementUtil("li");
-    const albumArt = createElementUtil("img");
-    albumArt.src = item.cover_image || "";
-   listItem.classList.add("version");
-   listItem.id = `version-${index}`;
-   listItem.innerHTML = `<span>Title: ${item.title}</span><br>
-   <span>Release: ${item.type === "release" ? "Single or EP": item.type}</span><br>
-   <span>Year: ${item.year || "Unknown"}</span>`;
-   listItem.appendChild(albumArt);
-   domElements.additionalReleasesList.appendChild(listItem);
-   })
-} */
-
-
-const displaySecondaryData = async (trackData, secondaryData) => {
-  resetContainers(domElements.trackListingContainer);
-  
-  const tracksArray = transFormTrackData(trackData);
-  renderTrackList(tracksArray);
-  renderTypeDescriptions(secondaryData);
-};
-
-
-const displayMoreInfo = (data) => {
-  resetContainers(domElements.moreInfoContainer, domElements.description);
-  renderMembers(data);
-  domElements.tracksMembersLists.classList.toggle('initial')
-  renderProfileDescription(data);
-  
-};
 
 const addToFavorites = () => {
   const songName = domElements.trackTitle.textContent.slice(13);
@@ -166,8 +113,6 @@ const addToFavorites = () => {
 
 export {
   renderInitialDisplay,
-  displaySecondaryData,
-  displayMoreInfo,
   addToFavorites,
   domElements,
 };

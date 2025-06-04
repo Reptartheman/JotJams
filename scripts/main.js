@@ -4,12 +4,10 @@ import {
   getMasterUrl,
   getImages,
   getPrimaryData,
-  getSecondaryData,
   getAllOtherUrls,
-  getMoreInfo,
 } from "./data";
 
-import { renderInitialDisplay, displaySecondaryData, addToFavorites, domElements } from "./dom";
+import { renderInitialDisplay, addToFavorites, domElements, renderVersions } from "./dom";
 import { getUserInput } from "./utils";
 
 let currentLinks = null;
@@ -22,9 +20,7 @@ const displayInitialSearch = async (e) => {
   const imageSources = getImages(initialData);
   const mainData = await dataFromMasterReleaseURL(masterUrl);
   const primary = getPrimaryData(mainData);
-  const secondary = getSecondaryData(mainData);
   currentLinks = getAllOtherUrls(mainData);
-  console.log(secondary);
   const display = renderInitialDisplay(input, {
     ...primary,
     coverImage: imageSources.coverImage,
@@ -35,7 +31,7 @@ const displayInitialSearch = async (e) => {
     window.location.href = "more.html";
   }
 });
-
+  renderVersions(initialData)
   return display;
 };
 

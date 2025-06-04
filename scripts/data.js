@@ -1,6 +1,3 @@
-import { discogsAPIData } from "./api";
-import { displayMoreInfo } from "./dom";
-
 export const getMasterUrl = (initialData) => {
   const masterUrl = `${initialData[0].master_url}?page=1&per_page=1`;
   return masterUrl;
@@ -34,12 +31,6 @@ export const getAllOtherUrls = ({ artistResourceUrl, mainReleaseData, recentRele
   versions,
 });
 
-
-export const getMoreInfo = async (links) => {
-  const detailedData = await discogsAPIData(links);
-  console.log(detailedData);
-  displayMoreInfo(detailedData);
-};
 
 export const transFormTrackData = (trackData) => {
   const tracks = trackData.map(track => {
