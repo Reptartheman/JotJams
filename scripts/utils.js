@@ -1,6 +1,6 @@
 export const returnPromises = (...promises) => Promise.all(promises);
 
-export const shortenProfileDescription = (text, limit = 245) => {
+export const shortenProfileDescription = (text, limit = 950) => {
   return text.length > limit ? text.slice(0, limit) + "..." : text;
 };
 
@@ -24,5 +24,14 @@ export const resetContainers = (...containers) => {
 
 
 export const getUserInput = (input) => input.value.trim();
+
+
+export function splitInput(input) {
+  const words = input.trim().split(' ');
+  const songName = words.pop();
+  const artistName = words.join(' ');
+  return { artistName, songName };
+}
+
 
 

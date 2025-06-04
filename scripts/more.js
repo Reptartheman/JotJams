@@ -1,6 +1,10 @@
 import { discogsAPIData } from "./api.js";
 import { transFormTrackData } from "./data.js";
-import { createElementUtil, shortenProfileDescription } from "./utils.js";
+import {
+  createElementUtil,
+  shortenProfileDescription,
+  returnPromises
+} from "./utils.js";
 
 const backToSearch = document.getElementById("backToSearch");
 const versionsList = document.getElementById("additionalReleasesList");
@@ -18,23 +22,7 @@ if (!links) {
   window.location.href = "index.html";
 }
 
-const renderVersions = async (url) => {
-  const data = await discogsAPIData(url);
-  //const versions = data.versions?.slice(0, 8) || [];
 
-  data.forEach((item, index) => {
-    const listItem = createElementUtil("li");
-    const albumArt = createElementUtil("img");
-    albumArt.src = item.cover_image || "";
-   listItem.classList.add("version");
-   listItem.id = `version-${index}`;
-   listItem.innerHTML = `<span>Title: ${item.title}</span><br>
-   <span>Release: ${item.type === "release" ? "Single or EP": item.type}</span><br>
-   <span>Year: ${item.year || "Unknown"}</span>`;
-   listItem.appendChild(albumArt);
-    versionsList.appendChild(listItem);
-  });
-};
 
 const renderMembers = (members) => {
   if (!members) {
@@ -52,6 +40,11 @@ const renderMembers = (members) => {
   });
 };
 
+const renderArtistImage = (image) => {
+  const img = createElementUtil("img");
+  
+}
+
 const renderProfileDescription = (profile) => {
   const p = createElementUtil("p");
   p.textContent = shortenProfileDescription(profile || "No profile description available.");
@@ -68,15 +61,26 @@ const renderTrackList = (trackData) => {
   });
 };
 
+const renderTypeDescriptions = ({ genre, style }) => {
+  const descriptions = [`Genre: ${genre}`, `Style: ${style}`];
+
+  descriptions.forEach((text) => {
+    const descriptionItem = createElementUtil("li");
+    descriptionItem.classList.add("description-item");
+    descriptionItem.textContent = text;
+    domElements.trackListingContainer.appendChild(descriptionItem);
+  });
+};
+
+
 const renderEverything = async () => {
-  const artistData = await discogsAPIData(links.artistResourceUrl);
+  const artistData      = await discogsAPIData(links.artistResourceUrl);
   const mainReleaseData = await discogsAPIData(links.mainReleaseData);
-  console.log(artistData);
   console.log(mainReleaseData);
+
   renderProfileDescription(artistData.profile);
   renderMembers(artistData.members);
   renderTrackList(mainReleaseData.tracklist);
-  renderVersions(artistData.releases_url);
 };
 
 renderEverything();
