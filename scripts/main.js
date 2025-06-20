@@ -7,7 +7,7 @@ import {
   getAllOtherUrls,
 } from "./data";
 
-import { renderInitialDisplay, addToFavorites, domElements, renderVersions } from "./dom";
+import { renderInitialDisplay, domElements, renderVersions, handleFavorites } from "./dom";
 import { getUserInput } from "./utils";
 
 let currentLinks = null;
@@ -40,7 +40,7 @@ domElements.seeFavs.addEventListener("click", () => {
   window.location.href = "favs.html";
 });
 
-domElements.addToFavs.addEventListener("click", addToFavorites);
+//domElements.addToFavs.addEventListener("click", handleFavorites);
 
 
 

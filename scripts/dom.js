@@ -74,46 +74,44 @@ export const renderVersions = (data) => {
     img.alt = `Cover art for ${item.title}`;
     li.appendChild(img);
 
+    li.addEventListener("click", () => handleFavorites(item, li));
+
     domElements.versionsGrid.appendChild(li);
   });
 };
 
 
-const addToFavorites = () => {
-  const songName = domElements.trackTitle.textContent.slice(13);
-  const artistName = domElements.artist.textContent.slice(8);
-  const favsDescription = `${artistName} ${songName}`;
-  const originalText = addToFavs.textContent;
-  let favs = JSON.parse(localStorage.getItem('favs')) || [];
-  
-  if (!favs.includes(favsDescription)) {
-    favs.push(favsDescription);
-    localStorage.setItem('favs', JSON.stringify(favs));
-    domElements.addToFavs.textContent = "Added!"
-    domElements.addToFavs.classList.add("added");
-    domElements.addToFavs.disabled = true;
-
-    setTimeout(() => {
-      domElements.addToFavs.textContent = originalText;
-      domElements.addToFavs.classList.remove("added");
-      domElements.addToFavs.disabled = false;
-    }, 1000); 
-  } else if (favs.includes(favsDescription)) {
-    domElements.addToFavs.textContent = 'Already in Favorites!';
-    domElements.addToFavs.classList.add("already-there");
-    domElements.addToFavs.disabled = true;
-    setTimeout(() => {
-      domElements.addToFavs.textContent = originalText;
-      domElements.addToFavs.classList.remove("already-there");
-      domElements.addToFavs.disabled = false;
-    }, 1000);
+const handleFavorites = (version, cardEl) => {
+  const favs = JSON.parse(localStorage.getItem("favs")) || [];
+  const alreadyInFavorites = favs.some(fav => fav.id === version.id)
+  if (!alreadyInFavorites) {
+    favs.push(version);
+    localStorage.setItem("favs", JSON.stringify(favs));
   }
-}
+
+  const badge = document.createElement("span");
+  badge.className = alreadyInFavorites ? "badge already" : "badge added";
+  badge.textContent = alreadyInFavorites ? "Already in Favorites!" : "Added to Favorites!";
+
+  cardEl.style.position = "relative";
+  cardEl.appendChild(badge);
+
+  requestAnimationFrame(() => {
+    badge.style.opacity = "1";
+    setTimeout(() => {
+      badge.style.opacity = "0";
+      badge.addEventListener("transitionend", () => badge.remove());
+    }, 800);
+  });
+
+
+};
+
 
 
 export {
   renderInitialDisplay,
-  addToFavorites,
+  handleFavorites,
   domElements,
 };
 

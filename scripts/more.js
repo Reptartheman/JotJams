@@ -6,8 +6,55 @@ import {
   returnPromises
 } from "./utils.js";
 
+function renderCarousel(images) {
+  const slidesEl = document.getElementById("slides");
+  slidesEl.innerHTML = "";   // clear old slides
+
+  images.forEach(img => {
+    const slide = document.createElement("img");
+    slide.src = img.uri150;
+    slide.alt = "Cover art";
+    // store full-size link for lightbox
+    slide.dataset.full = img.resource_url;
+    slidesEl.appendChild(slide);
+  });
+
+  // wire left/right buttons
+  document.querySelector(".prev").onclick = () =>
+    slidesEl.scrollBy({ left: -slidesEl.clientWidth, behavior: "smooth" });
+  document.querySelector(".next").onclick = () =>
+    slidesEl.scrollBy({ left:  slidesEl.clientWidth, behavior: "smooth" });
+
+  // click any thumb to open lightbox
+  slidesEl.onclick = e => {
+    if (e.target.tagName === "IMG") {
+      openLightbox(e.target.dataset.full);
+    }
+  };
+}
+
+
+function openLightbox(src) {
+  const overlay = document.createElement("div");
+  overlay.id = "lightbox";
+  overlay.innerHTML = `
+    <div class="lb-inner">
+      <img src="${src}" alt="Full cover art" />
+      <button class="lb-close">&times;</button>
+    </div>
+  `;
+  document.body.appendChild(overlay);
+
+  overlay.addEventListener("click", e => {
+    if (e.target.id === "lightbox" || e.target.matches(".lb-close")) {
+      overlay.remove();
+    }
+  });
+}
+
+
+
 const backToSearch = document.getElementById("backToSearch");
-const versionsList = document.getElementById("additionalReleasesList");
 const membersList = document.getElementById("membersList");
 const trackListingContainer = document.getElementById("trackListingContainer");
 const descriptionBox = document.getElementById("description");
@@ -40,11 +87,6 @@ const renderMembers = (members) => {
   });
 };
 
-const renderArtistImage = (image) => {
-  const img = createElementUtil("img");
-  
-}
-
 const renderProfileDescription = (profile) => {
   const p = createElementUtil("p");
   p.textContent = shortenProfileDescription(profile || "No profile description available.");
@@ -61,17 +103,6 @@ const renderTrackList = (trackData) => {
   });
 };
 
-const renderTypeDescriptions = ({ genre, style }) => {
-  const descriptions = [`Genre: ${genre}`, `Style: ${style}`];
-
-  descriptions.forEach((text) => {
-    const descriptionItem = createElementUtil("li");
-    descriptionItem.classList.add("description-item");
-    descriptionItem.textContent = text;
-    domElements.trackListingContainer.appendChild(descriptionItem);
-  });
-};
-
 
 const renderEverything = async () => {
   const artistData      = await discogsAPIData(links.artistResourceUrl);
@@ -81,6 +112,8 @@ const renderEverything = async () => {
   renderProfileDescription(artistData.profile);
   renderMembers(artistData.members);
   renderTrackList(mainReleaseData.tracklist);
+
+  renderCarousel(mainReleaseData.images);
 };
 
 renderEverything();
