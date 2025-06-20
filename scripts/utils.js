@@ -1,6 +1,6 @@
 export const returnPromises = (...promises) => Promise.all(promises);
 
-export const shortenProfileDescription = (text, limit = 950) => {
+export const shortenProfileDescription = (text, limit = 1000) => {
   return text.length > limit ? text.slice(0, limit) + "..." : text;
 };
 
