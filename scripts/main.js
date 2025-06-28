@@ -14,7 +14,7 @@ let currentLinks = null;
 
 const displayInitialSearch = async (e) => {
   e.preventDefault();
-  const input = getUserInput(searchInput);
+  const input = getUserInput(domElements.searchInput);
   const initialData = await initialDataFetch(input);
   const masterUrl = getMasterUrl(initialData);
   const imageSources = getImages(initialData);
@@ -36,6 +36,11 @@ const displayInitialSearch = async (e) => {
 };
 
 domElements.searchButton.addEventListener("click", displayInitialSearch);
+domElements.searchInput.addEventListener("keydown", (e) => {
+  if (e.key === "Enter") {
+    displayInitialSearch(e);
+  }
+});
 domElements.seeFavs.addEventListener("click", () => {
   window.location.href = "favs.html";
 });
