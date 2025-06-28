@@ -110,9 +110,16 @@ footer {
   max-width: 20%;
 }
 
+
 .search-section {
   display: flex;
   justify-content: center;
+}
+
+.search-container {
+  position: relative;
+  width: 60%;
+  display: flex;
 }
 
 .search-bar {
@@ -121,6 +128,8 @@ footer {
   font-size: var(--size-14);
   border: 1px solid #ccc;
   border-radius: 4px;
+  width: 100%;
+  padding-right: var(--size-40);
 }
 
 .search-bar::placeholder {
@@ -134,23 +143,33 @@ footer {
   gap: var(--size-14);
 }
 
+
 .search-button,
 .secondary-button {
   font-family: var(--main-font);
-  color: #fff;
-  background-color: var(--main-purple);
   border: none;
   border-radius: 4px;
   cursor: pointer;
 }
 
 .search-button {
-  width: 10vw;
+  position: absolute;
+  right: var(--size-10);
+  top: 50%;
+  transform: translateY(-50%);
+  width: var(--size-40);
+  height: var(--size-40);
+  display: flex;
+  align-items: center;
+  justify-content: center;
   font-size: var(--size-20);
-  border: 1px solid white;
+  background-color: transparent;
+  color: var(--main-purple);
 }
 
 .secondary-button {
+  color: #fff;
+  background-color: var(--main-purple);
   width: 16vw;
   font-size: var(--size-20);
   height: var(--size-50);
