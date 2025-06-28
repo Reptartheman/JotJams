@@ -9,34 +9,35 @@
   <body>
 
       <header class="header">
-        <div class="speaker-container">
+       <!--  <div class="test-border speaker-container">
           <img
             src="./assets/styles/monitor2FRAMERough-GREEN-B.png"
             alt="speaker"
           />
-        </div>
-        <section class="search-section ">
+        </div> -->
+        <section class="test-border search-section ">
           <input
             class="search-bar"
             type="text"
             id="searchInput"
             placeholder="Song and artist name"
           />
-          <div id="searchButtonContainer" class="search-btn-container">
-            <button id="searchButton" class="search-button">Search</button>
+          <div id="searchButtonContainer" class="test-border search-btn-container">
+            <button id="searchButton" class="test-border search-button">Search</button>
           </div>
         </section>
-        <div class="speaker-container">
+       <!--  <div class="test-border speaker-container">
           <img
             src="./assets/styles/monitor2FRAMERough-GREEN-B.png"
             alt="speaker"
           />
-        </div>
+        </div> -->
       </header>
 
-      <main id="mainContainer" class="app-container">
-        <div id="vinylContainer" class="vinyl-container">
+      <main id="mainContainer" class="test-border app-container">
+        <div id="vinylContainer" class="test-border vinyl-container">
           <img
+          class="vinyl-img"
             id="vinylImg"
             src="./assets/styles/JJ vinyl.svg"
             alt="Welcome to Jot Jams"
@@ -60,7 +61,7 @@
           </div>
          
           <section class="versions-section">
-      <h2>Versions</h2>
+      <h2>Versions <span class="amount" id="amount"></span></h2>
       <ul id="versionsGrid" class="versions-grid"></ul>
     </section>
         </section>
@@ -68,11 +69,11 @@
      
         <div class="favs-btn-container">
             <button id="seeFavs" class="see-favs secondary-button">
-              See favorites
+              Favorites
             </button>
         </div>
         <div class="see-more-container">
-          <button id="seeMoreBtn" class="secondary-button">See More...</button>
+          <button id="seeMoreBtn" class="secondary-button">More...</button>
          </div>
         </section>
       </main>
