@@ -21,7 +21,7 @@ const displayInitialSearch = async (e) => {
   const mainData = await dataFromMasterReleaseURL(masterUrl);
   const primary = getPrimaryData(mainData);
   currentLinks = getAllOtherUrls(mainData);
-  const display = renderInitialDisplay(input, {
+  const display = renderInitialDisplay({
     ...primary,
     coverImage: imageSources.coverImage,
   });

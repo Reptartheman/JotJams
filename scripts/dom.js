@@ -30,13 +30,13 @@ const elementsWithIds = [
   "tracksMembersLists",
   "additionalReleases",
   "additionalReleasesList",
-  "versionsGrid"
+  "versionsGrid",
+  "amount"
 ];
 
 const domElements = addIdsToElements(elementsWithIds);
 
-const renderInitialDisplay = (input, data) => {
-  domElements.resultsHeading.textContent = `Results for: ${input}`;
+const renderInitialDisplay = (data) => {
   domElements.trackTitle.textContent = `Track Title: ${data.title || "Unknown"}`;
   domElements.artist.textContent = `Artist: ${data.artist || "Unknown"}`;
   domElements.album.textContent = `Album: ${data.album || "Unknown"}`;
@@ -54,6 +54,7 @@ const renderInitialDisplay = (input, data) => {
 };
 
 export const renderVersions = (data) => {
+  domElements.amount.textContent = `(Showing ${data.length})`
   //domElements.versionsGrid.innerHTML = ""; // clear old entries
   data.forEach((item, index) => {
     const li = createElementUtil("li");
