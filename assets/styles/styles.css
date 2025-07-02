@@ -355,12 +355,24 @@ section.more-favorites {
   display: flex;
 }
 
+.fav {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: var(--size-10);
+  font-size: var(--size-20);
+}
+
 .favorites-list {
   padding-top: var(--size-20);
   display: flex;
   gap: var(--size-14);
   flex-direction: column;
   align-items: center;
+}
+
+.favImg {
+  max-width: 100px;
 }
 
 .more-container {
@@ -384,7 +396,7 @@ section.more-favorites {
   scroll-snap-align: center;
   flex-shrink: 0;
   width: 100%;
-  max-width: 300px;
+  max-width: 200px;
 }
 .prev,
 .next {
@@ -425,9 +437,20 @@ section.more-favorites {
 }
 
 @media (max-width: 768px) {
+
+  .vinyl-container {
+    width: 70%;
+    height: 70%;
+  }
+
   .vinyl-img {
-    width: 80%;
-    height: 80%;
+    width: 100%;
+    height: 100%;
+  }
+
+  .secondary-button {
+    font-size: var(--size-16);
+    height: var(--size-30);
   }
   
 }

@@ -2,14 +2,14 @@ import { createElementUtil } from "./utils.js";
 
 const favoritesList = document.getElementById("favoritesList");
 const backToSearch = document.getElementById("backToSearch");
-
+console.log(favoritesList);
 backToSearch.addEventListener("click", () => {
   window.location.href = "index.html";
 });
 
 const renderFavorites = () => {
   const favorites = JSON.parse(localStorage.getItem("favs")) || [];
-
+  console.log(favorites);
   if (favorites.length === 0) {
     const emptyMsg = createElementUtil("li");
     emptyMsg.textContent = "No favorites yet. Go add some!";
@@ -20,8 +20,11 @@ const renderFavorites = () => {
 
   favorites.forEach((item, index) => {
     const li = createElementUtil("li");
+    const thumbNail = createElementUtil("img");
     li.classList.add("fav");
-    li.textContent = `${index + 1}. ${item}`;
+    li.textContent = `${index + 1}. ${item.title}`;
+    thumbNail.classList.add("favImg");
+    thumbNail.src = `${item.cover_image}`
 
     const removeBtn = createElementUtil("button");
     removeBtn.textContent = "Remove";
@@ -32,8 +35,9 @@ const renderFavorites = () => {
       localStorage.setItem("favs", JSON.stringify(updated));
       li.remove();
     });
-
+    li.appendChild(thumbNail);
     li.appendChild(removeBtn);
+    
     favoritesList.appendChild(li);
   });
 };

@@ -105,7 +105,7 @@ const renderTrackList = (trackData) => {
 
 
 const renderEverything = async () => {
-  const artistData      = await discogsAPIData(links.artistResourceUrl);
+  const artistData = await discogsAPIData(links.artistResourceUrl);
   const mainReleaseData = await discogsAPIData(links.mainReleaseData);
   console.log(mainReleaseData);
 
