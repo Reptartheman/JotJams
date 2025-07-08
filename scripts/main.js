@@ -20,6 +20,7 @@ const displayInitialSearch = async (e) => {
   const imageSources = getImages(initialData);
   const mainData = await dataFromMasterReleaseURL(masterUrl);
   const primary = getPrimaryData(mainData);
+  console.log(mainData);
   currentLinks = getAllOtherUrls(mainData);
   const display = renderInitialDisplay({
     ...primary,
@@ -46,7 +47,7 @@ domElements.seeFavs.addEventListener("click", () => {
 });
 
 //domElements.addToFavs.addEventListener("click", handleFavorites);
-
+//initialData and results (api.js 44) are the same data structure
 
 
 /* 

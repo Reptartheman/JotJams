@@ -49,7 +49,7 @@ const renderInitialDisplay = (data) => {
     //domElements.addToFavs.classList.toggle("active");
     domElements.vinylContainer.classList.add("hidden");
   } else {
-    resetContainers(domElements.trackListingContainer, domElements.moreInfoContainer, domElements.description);
+    resetContainers(domElements.versionsGrid);
   }
 };
 
