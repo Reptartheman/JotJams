@@ -8,6 +8,7 @@ backToSearch.addEventListener("click", () => {
 });
 
 const renderFavorites = () => {
+  favoritesList.innerHTML = "";
   const favorites = JSON.parse(localStorage.getItem("favs")) || [];
   if (favorites.length === 0) {
     const emptyMsg = createElementUtil("li");
@@ -41,6 +42,8 @@ const renderFavorites = () => {
     
     favoritesList.appendChild(li);
   });
+
+  return favorites;
 };
 
 function updateFavoriteNumbers() {
@@ -54,7 +57,6 @@ function updateFavoriteNumbers() {
 function sortFavorites(direction) {
   const favorites = favoritesList.querySelectorAll(".fav");
   const favoritesArray = Array.from(favorites);
-
   favoritesArray.sort((a, b) => {
     if (direction === 'asc') {
       return a.id.localeCompare(b.id);
@@ -70,7 +72,11 @@ function sortFavorites(direction) {
 sortBtns.forEach(button => {
   button.addEventListener('click', (e) => {
     const direction = e.target.dataset.sortdir;
-    sortFavorites(direction);
+    if (direction === "original") {
+      renderFavorites();
+    } else {
+      sortFavorites(direction);
+    }
   });
 });
 
