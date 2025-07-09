@@ -36,6 +36,7 @@ const elementsWithIds = [
 
 const domElements = addIdsToElements(elementsWithIds);
 
+
 const renderInitialDisplay = (data) => {
   domElements.trackTitle.textContent = `Track Title: ${data.title || "Unknown"}`;
   domElements.artist.textContent = `Artist: ${data.artist || "Unknown"}`;
@@ -46,7 +47,6 @@ const renderInitialDisplay = (data) => {
   if (!domElements.resultsList.classList.contains("active")) {
     domElements.resultsList.classList.toggle("active");
     domElements.resultsContainer.classList.toggle("active");
-    //domElements.addToFavs.classList.toggle("active");
     domElements.vinylContainer.classList.add("hidden");
   } else {
     resetContainers(domElements.versionsGrid);
@@ -55,21 +55,17 @@ const renderInitialDisplay = (data) => {
 
 export const renderVersions = (data) => {
   domElements.amount.textContent = `(Showing ${data.length})`
-  //domElements.versionsGrid.innerHTML = ""; // clear old entries
   data.forEach((item, index) => {
     const li = createElementUtil("li");
     li.classList.add("version");
     li.id = `version${index}`;
     li.style.gridArea = `version${index + 1}`;
-
-    // render text info
     li.innerHTML = `
       <span>Title: ${item.title}</span>
       <span>Release: ${item.type === "release" ? "Single or EP" : item.type}</span>
       <span>Year: ${item.year || "Unknown"}</span>
     `;
 
-    // append cover image (now available)
     const img = createElementUtil("img");
     img.src = item.cover_image || item.thumb || "";
     img.alt = `Cover art for ${item.title}`;

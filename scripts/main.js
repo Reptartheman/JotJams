@@ -7,7 +7,7 @@ import {
   getAllOtherUrls,
 } from "./data";
 
-import { renderInitialDisplay, domElements, renderVersions, handleFavorites } from "./dom";
+import { renderInitialDisplay, domElements, renderVersions } from "./dom";
 import { getUserInput } from "./utils";
 
 let currentLinks = null;
@@ -42,18 +42,10 @@ domElements.searchInput.addEventListener("keydown", (e) => {
     displayInitialSearch(e);
   }
 });
+
 domElements.seeFavs.addEventListener("click", () => {
   window.location.href = "favs.html";
 });
 
-//domElements.addToFavs.addEventListener("click", handleFavorites);
-//initialData and results (api.js 44) are the same data structure
-
-
-/* 
-NEXT TIME:
-
-- sort and favorite functions
-*/
 
 

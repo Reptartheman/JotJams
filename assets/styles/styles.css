@@ -64,13 +64,13 @@ li {
   list-style-type: none;
 }
 
-.card {
+/* .card {
   background: #fff;
   border: 1px solid #ccc;
   border-radius: 4px;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
   padding-bottom: var(--size-20);
-}
+} */
 
 div.section-divider {
   position: relative;
@@ -94,6 +94,7 @@ main {
   flex: 1;
   display: flex;
   flex-direction: column;
+  align-self: center;
 }
 
 footer {
@@ -140,7 +141,7 @@ footer {
   color: #fff;
   background-color: var(--main-purple);
   width: 16vw;
-  font-size: var(--size-20);
+  font-size: var(--size-24);
   height: var(--size-50);
 }
 
@@ -156,13 +157,20 @@ footer {
   display: flex;
   flex-direction: column;
   align-items: center;
+  padding: var(--size-30) 0;
 }
 /* ------------------vinyl------------- */
 .vinyl-container {
+  width: 70%;
+  height: 70%;
   display: flex;
   margin-top: var(--size-20);
   flex-direction: column;
 }
+  .vinyl-img {
+    width: 100%;
+    height: 100%;
+  }
 
 .vinyl-container.hidden {
   display: none;
@@ -419,9 +427,6 @@ section.more-favorites {
 /* Make sure the expanded content is responsive */
 @media (max-width: 1024px) {
 
-  .app-container {
-      padding: var(--size-30) 0;
-  }
 
   .search-bar {
     font-size: var(--size-16);
@@ -434,31 +439,63 @@ section.more-favorites {
   .more-container {
     flex-direction: column;
   }
+
+  .secondary-button {
+    font-size: var(--size-20);
+    height: var(--size-40);
+  }
+
+
+  .version span {
+    text-align: center;
+  }
+
 }
 
 @media (max-width: 768px) {
 
-  .vinyl-container {
-    width: 70%;
-    height: 70%;
-  }
-
-  .vinyl-img {
-    width: 100%;
-    height: 100%;
-  }
 
   .secondary-button {
-    font-size: var(--size-16);
-    height: var(--size-30);
+    width: var(--size-150);
   }
   
 }
 
 
-@media (max-width: 460px) {
+@media (max-width: 425px) {
+
+  .vinyl-container {
+    width: 85%;
+    height: 75%;
+}
+
   .vinyl-img {
     display: flex;
   }
+
+  section.more-favorites {
+    gap: var(--size-40);
+    display: flex;
+}
+
+  .secondary-button {
+    font-size: var(--size-16);
+    height: var(--size-40);
+    width: var(--size-100);
+  }
+
+  .results-container.active {
+    width: 90%;
+}
+
+.versions-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    grid-template-rows: repeat(2, 1fr);
+    grid-template-areas: "version1 version2"
+    "version3 version4"
+    "version5 version6"
+    "version7 version8";
+}
   
 }
