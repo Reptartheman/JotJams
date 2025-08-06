@@ -163,9 +163,10 @@ footer {
   display: flex;
   margin-top: var(--size-20);
   flex-direction: column;
+  align-items: center;
 }
   .vinyl-img {
-    width: 100%;
+    width: 75%;
     height: 100%;
   }
 
