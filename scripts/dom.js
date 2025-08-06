@@ -59,7 +59,6 @@ export const renderVersions = (data) => {
     const li = createElementUtil("li");
     li.classList.add("version");
     li.id = `version${index}`;
-    li.style.gridArea = `version${index + 1}`;
     li.innerHTML = `
       <span>Title: ${item.title}</span>
       <span>Release: ${item.type === "release" ? "Single or EP" : item.type}</span>
