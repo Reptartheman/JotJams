@@ -288,10 +288,11 @@ ul.inner-data-container {
 
 .versions-grid {
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  grid-template-rows: repeat(10, 1fr);
+  grid-template-columns: repeat(5, 1fr);
+  grid-template-rows: repeat(6, 1fr);
   gap: var(--size-16);
   grid-auto-flow: row;
+  overflow: scroll;
 }
 
 .version {
@@ -451,6 +452,11 @@ section.more-favorites {
 
 @media (max-width: 768px) {
 
+  .versions-grid {
+    grid-template-columns: repeat(3, 1fr);
+  grid-template-rows: repeat(10, 1fr);
+}
+
 
   .secondary-button {
     width: var(--size-150);
@@ -490,4 +496,12 @@ section.more-favorites {
   grid-template-rows: repeat(15, 1fr);
 }
   
+}
+
+
+@media (max-width: 424px) {
+  .versions-grid {
+    grid-template-columns: repeat(1, 1fr);
+  grid-template-rows: repeat(30, 1fr);
+}
 }
