@@ -3,6 +3,7 @@ import { createElementUtil } from "./utils.js";
 const favoritesList = document.getElementById("favoritesList");
 const backToSearch = document.getElementById("backToSearch");
 const sortBtns = document.querySelectorAll(".sortBtn");
+
 backToSearch.addEventListener("click", () => {
   window.location.href = "index.html";
 });
@@ -10,6 +11,7 @@ backToSearch.addEventListener("click", () => {
 const renderFavorites = () => {
   favoritesList.innerHTML = "";
   const favorites = JSON.parse(localStorage.getItem("favs")) || [];
+
   if (favorites.length === 0) {
     const emptyMsg = createElementUtil("li");
     emptyMsg.textContent = "No favorites yet. Go add some!";
@@ -18,28 +20,33 @@ const renderFavorites = () => {
     return;
   }
 
-  favorites.forEach((item, index) => {
+  favorites.forEach((item) => {
     const li = createElementUtil("li");
-    const thumbNail = createElementUtil("img");
     li.classList.add("fav");
+    li.setAttribute("data-title", item.title);
     li.id = item.title;
-    li.setAttribute('data-title', item.title);
-    li.textContent = `${index + 1}. ${item.title}`;
+
+    const thumbNail = createElementUtil("img");
     thumbNail.classList.add("favImg");
-    thumbNail.src = `${item.cover_image}`
+    thumbNail.src = item.cover_image || item.thumb || "";
+    thumbNail.alt = `Cover art for ${item.title}`;
+
+    const titleSpan = createElementUtil("span");
+    titleSpan.textContent = item.title;
+    titleSpan.style.fontWeight = "bold";
 
     const removeBtn = createElementUtil("button");
     removeBtn.textContent = "Remove";
     removeBtn.classList.add("secondary-button");
-    removeBtn.style.marginLeft = "10px";
     removeBtn.addEventListener("click", () => {
-      const updated = favorites.filter(fave => fave !== item);
+      const updated = favorites.filter(fave => fave.id !== item.id);
       localStorage.setItem("favs", JSON.stringify(updated));
       li.remove();
     });
+
     li.appendChild(thumbNail);
+    li.appendChild(titleSpan);
     li.appendChild(removeBtn);
-    
     favoritesList.appendChild(li);
   });
 
@@ -49,10 +56,11 @@ const renderFavorites = () => {
 function updateFavoriteNumbers() {
   const items = favoritesList.querySelectorAll(".fav");
   items.forEach((item, idx) => {
-    item.childNodes[0].textContent = `${idx + 1}. ${item.getAttribute('data-title')}`;
+    const title = item.getAttribute('data-title');
+    const titleSpan = item.querySelector("span");
+    if (titleSpan) titleSpan.textContent = `${idx + 1}. ${title}`;
   });
 }
-
 
 function sortFavorites(direction) {
   const favorites = favoritesList.querySelectorAll(".fav");
