@@ -406,12 +406,10 @@ section.more-favorites {
   padding: var(--size-20);
 }
 
-.carousel {
-  position: relative;
-  overflow: hidden;
-}
 .slides {
   display: flex;
+  flex-wrap: wrap;
+  justify-content: space-evenly;
   scroll-snap-type: x mandatory;
   overflow-x: auto;
   scroll-behavior: smooth;
@@ -421,23 +419,6 @@ section.more-favorites {
   flex-shrink: 0;
   width: 100%;
   max-width: 200px;
-}
-.prev,
-.next {
-  position: absolute;
-  top: 50%;
-  transform: translateY(-50%);
-  background: rgba(0, 0, 0, 0.5);
-  color: #fff;
-  border: none;
-  padding: 0.5rem;
-  cursor: pointer;
-}
-.prev {
-  left: 0;
-}
-.next {
-  right: 0;
 }
 
 .sortBtns {
