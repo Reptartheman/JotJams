@@ -357,24 +357,46 @@ section.more-favorites {
   display: flex;
 }
 
+.favorites-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+  gap: var(--size-16);
+  list-style: none;
+  padding: var(--size-16);
+  justify-items: stretch;    /* or center, based on your design */
+}
+
 .fav {
   display: flex;
-  justify-content: center;
-  align-items: center;
-  gap: var(--size-10);
-  font-size: var(--size-20);
-}
-
-.favorites-list {
-  padding-top: var(--size-20);
-  display: flex;
-  gap: var(--size-14);
   flex-direction: column;
   align-items: center;
+  background-color: #ffffff;
+  border: 1px solid #ccc;
+  border-radius: var(--size-8);
+  padding: var(--size-16);
+  width: 100%;
+  max-width: unset;
+  text-align: center;
+  justify-content: center;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+  position: relative;
 }
 
+.fav button {
+  margin-top: var(--size-8);
+  width: 100%;
+}
+
+
+
+
+
+
 .favImg {
-  max-width: 100px;
+  width: 100%;
+  height: auto;
+  border-radius: var(--size-4);
+  margin-bottom: var(--size-8);
 }
 
 .more-container {
@@ -384,12 +406,10 @@ section.more-favorites {
   padding: var(--size-20);
 }
 
-.carousel {
-  position: relative;
-  overflow: hidden;
-}
 .slides {
   display: flex;
+  flex-wrap: wrap;
+  justify-content: space-evenly;
   scroll-snap-type: x mandatory;
   overflow-x: auto;
   scroll-behavior: smooth;
@@ -400,25 +420,10 @@ section.more-favorites {
   width: 100%;
   max-width: 200px;
 }
-.prev,
-.next {
-  position: absolute;
-  top: 50%;
-  transform: translateY(-50%);
-  background: rgba(0, 0, 0, 0.5);
-  color: #fff;
-  border: none;
-  padding: 0.5rem;
-  cursor: pointer;
-}
-.prev {
-  left: 0;
-}
-.next {
-  right: 0;
-}
 
 .sortBtns {
+  display: flex;
+  gap: var(--size-16);
   padding: var(--size-24) 0;
 }
 
