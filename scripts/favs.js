@@ -4,88 +4,128 @@ const favoritesList = document.getElementById("favoritesList");
 const backToSearch = document.getElementById("backToSearch");
 const sortBtns = document.querySelectorAll(".sortBtn");
 
-backToSearch.addEventListener("click", () => {
-  window.location.href = "index.html";
-});
+const LS_FAVS = "favs";
+const LS_HIDDEN = "hiddenIds";
 
-const renderFavorites = () => {
+const readFavs = () => JSON.parse(localStorage.getItem(LS_FAVS) || "[]");
+const writeFavs = (arr) => localStorage.setItem(LS_FAVS, JSON.stringify(arr));
+
+const readHidden = () => new Set(JSON.parse(localStorage.getItem(LS_HIDDEN) || "[]"));
+const writeHidden = (set) => localStorage.setItem(LS_HIDDEN, JSON.stringify([...set]));
+
+const getItemKey = (item) => {
+  if (item?.id != null) return String(item.id);
+  return `${item?.title ?? "untitled"}|${item?.year ?? "?"}|${item?.cover_image ?? item?.thumb ?? ""}`;
+};
+
+
+function emptyState() {
   favoritesList.innerHTML = "";
-  const favorites = JSON.parse(localStorage.getItem("favs")) || [];
+  const li = createElementUtil("li");
+  li.textContent = "No favorites yet. Go add some!";
+  li.style.textAlign = "center";
+  favoritesList.appendChild(li);
+}
 
-  if (favorites.length === 0) {
-    const emptyMsg = createElementUtil("li");
-    emptyMsg.textContent = "No favorites yet. Go add some!";
-    emptyMsg.style.textAlign = "center";
-    favoritesList.appendChild(emptyMsg);
-    return;
-  }
+function addFavoriteRow(item, index) {
+  const li = createElementUtil("li");
+  const key = getItemKey(item);
 
-  favorites.forEach((item) => {
-    const li = createElementUtil("li");
-    li.classList.add("fav");
-    li.setAttribute("data-title", item.title);
-    li.id = item.title;
+  li.classList.add("fav");
+  li.id = key;
+  li.setAttribute("data-title", item.title || "Unknown");
 
-    const thumbNail = createElementUtil("img");
-    thumbNail.classList.add("favImg");
-    thumbNail.src = item.cover_image || item.thumb || "";
-    thumbNail.alt = `Cover art for ${item.title}`;
+  const label = createElementUtil("span");
+  label.className = "fav-label";
+  label.textContent = `${index + 1}. ${item.title || "Unknown"}`;
 
-    const titleSpan = createElementUtil("span");
-    titleSpan.textContent = item.title;
-    titleSpan.style.fontWeight = "bold";
+  const thumb = createElementUtil("img");
+  thumb.classList.add("favImg");
+  thumb.alt = `Cover art for ${item.title || "Unknown"}`;
+  thumb.src = item.cover_image || item.thumb || "";
+  thumb.loading = "lazy";
+  thumb.onerror = () => { if (item.thumb && thumb.src !== item.thumb) thumb.src = item.thumb; };
 
-    const removeBtn = createElementUtil("button");
-    removeBtn.textContent = "Remove";
-    removeBtn.classList.add("secondary-button");
-    removeBtn.addEventListener("click", () => {
-      const updated = favorites.filter(fave => fave.id !== item.id);
-      localStorage.setItem("favs", JSON.stringify(updated));
-      li.remove();
-    });
-
-    li.appendChild(thumbNail);
-    li.appendChild(titleSpan);
-    li.appendChild(removeBtn);
-    favoritesList.appendChild(li);
+  
+  const removeBtn = createElementUtil("button");
+  removeBtn.textContent = "Remove";
+  removeBtn.classList.add("secondary-button");
+  removeBtn.style.marginLeft = "10px";
+  removeBtn.addEventListener("click", () => {
+    removeFromFavoritesByKey(key);
+    renderFavorites(); 
   });
 
-  return favorites;
-};
+  li.appendChild(label);
+  li.appendChild(thumb);
+  li.appendChild(removeBtn);
+  favoritesList.appendChild(li);
+}
 
 function updateFavoriteNumbers() {
   const items = favoritesList.querySelectorAll(".fav");
   items.forEach((item, idx) => {
-    const title = item.getAttribute('data-title');
-    const titleSpan = item.querySelector("span");
-    if (titleSpan) titleSpan.textContent = `${idx + 1}. ${title}`;
+    const label = item.querySelector(".fav-label");
+    const title = item.getAttribute("data-title") || "Unknown";
+    if (label) label.textContent = `${idx + 1}. ${title}`;
   });
 }
 
-function sortFavorites(direction) {
-  const favorites = favoritesList.querySelectorAll(".fav");
-  const favoritesArray = Array.from(favorites);
-  favoritesArray.sort((a, b) => {
-    if (direction === 'asc') {
-      return a.id.localeCompare(b.id);
-    } else {
-      return b.id.localeCompare(a.id);
-    }
-  });
 
-  favoritesArray.forEach(item => favoritesList.appendChild(item));
+function removeFromFavoritesByKey(key) {
+  
+  const favs = readFavs();
+  const updated = favs.filter((it) => getItemKey(it) !== key);
+  writeFavs(updated);
+
+  
+  const hidden = readHidden();
+  hidden.delete(key);
+  writeHidden(hidden);
+}
+
+
+function sortFavorites(direction) {
+  const rows = Array.from(favoritesList.querySelectorAll(".fav"));
+  rows.sort((a, b) => {
+    const ta = (a.getAttribute("data-title") || "").toLowerCase();
+    const tb = (b.getAttribute("data-title") || "").toLowerCase();
+    return direction === "asc" ? ta.localeCompare(tb) : tb.localeCompare(ta);
+  });
+  rows.forEach((row) => favoritesList.appendChild(row));
   updateFavoriteNumbers();
 }
 
-sortBtns.forEach(button => {
-  button.addEventListener('click', (e) => {
-    const direction = e.target.dataset.sortdir;
-    if (direction === "original") {
+
+function renderFavorites() {
+  favoritesList.innerHTML = "";
+  const favorites = readFavs();
+
+  if (!favorites.length) {
+    emptyState();
+    return favorites;
+  }
+
+  favorites.forEach((item, index) => addFavoriteRow(item, index));
+  return favorites;
+}
+
+
+backToSearch?.addEventListener("click", () => {
+  window.location.href = "index.html";
+});
+
+sortBtns.forEach((button) => {
+  button.addEventListener("click", (e) => {
+    const dir = e.currentTarget.dataset.sortdir;
+    if (dir === "original") {
+      
       renderFavorites();
-    } else {
-      sortFavorites(direction);
+    } else if (dir === "asc" || dir === "desc") {
+      sortFavorites(dir);
     }
   });
 });
+
 
 renderFavorites();

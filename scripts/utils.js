@@ -33,5 +33,16 @@ export function splitInput(input) {
   return { artistName, songName };
 }
 
+export function countByYear(items) {
+  const map = new Map();
+  for (const it of items) {
+    const y = it.year ? String(it.year) : "Unknown";
+    map.set(y, (map.get(y) || 0) + 1);
+  }
+  return [...map.entries()]
+    .sort((a,b) => (a[0]==="Unknown") - (b[0]==="Unknown") || a[0].localeCompare(b[0]));
+}
+
+
 
 

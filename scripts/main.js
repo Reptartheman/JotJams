@@ -7,7 +7,7 @@ import {
   getAllOtherUrls,
 } from "./data";
 
-import { renderInitialDisplay, domElements, renderVersions } from "./dom";
+import { renderYearCounters, renderInitialDisplay, domElements, renderVersions } from "./dom";
 import { getUserInput } from "./utils";
 
 let currentLinks = null;
@@ -35,6 +35,8 @@ const displayInitialSearch = async (e) => {
 
   renderVersions(initialData);
 
+  renderYearCounters(initialData); 
+  
   localStorage.setItem("lastSearchTerm", input);
   localStorage.setItem("lastSearchResults", JSON.stringify(initialData));
   localStorage.setItem("lastMasterURL", masterUrl);
@@ -47,11 +49,12 @@ const restoreLastSearch = () => {
 
   const parsedResults = JSON.parse(savedResults);
   const imageSources = getImages(parsedResults);
-
-  renderInitialDisplay({
+  const dataToDisplay = {
     ...getPrimaryData(parsedResults[0]),
     coverImage: imageSources.coverImage,
-  });
+  }
+
+  renderInitialDisplay(dataToDisplay);
 
   renderVersions(parsedResults);
 
