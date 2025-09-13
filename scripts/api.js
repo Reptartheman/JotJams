@@ -1,7 +1,7 @@
 const queryConfig = {
   baseURL: "https://api.discogs.com",
-  key: import.meta.env.API_KEY,
-  secret: import.meta.env.API_SECRET,
+  key: import.meta.env.VITE_API_KEY,
+  secret: import.meta.env.VITE_API_SECRET,
 };
 
 const buildURL = (baseURL, endpoint) => {

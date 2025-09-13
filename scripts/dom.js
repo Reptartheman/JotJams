@@ -1,4 +1,5 @@
 import {
+  countByYear,
   addIdsToElements,
   resetContainers,
   createElementUtil
@@ -36,6 +37,18 @@ const elementsWithIds = [
 
 const domElements = addIdsToElements(elementsWithIds);
 
+export function renderYearCounters(items) {
+  const countersEl = document.getElementById("counters");
+  if (!countersEl) return;
+  countersEl.innerHTML = "";
+  countByYear(items).forEach(([year, count]) => {
+    const pill = createElementUtil("span");
+    pill.className = "pill";
+    pill.textContent = `${year}: ${count}`;
+    countersEl.appendChild(pill);
+  });
+}
+
 
 const renderInitialDisplay = (data) => {
   domElements.trackTitle.textContent = `Track Title: ${data.title || "Unknown"}`;
@@ -54,22 +67,48 @@ const renderInitialDisplay = (data) => {
 };
 
 export const renderVersions = (data) => {
-  domElements.amount.textContent = `(Showing ${data.length})`
-  data.forEach((item, index) => {
+  resetContainers(domElements.versionsGrid);
+
+  const hiddenIds = new Set(JSON.parse(localStorage.getItem("hiddenIds") || "[]"));
+  const visibleIds = data.filter(item => !hiddenIds.has(String(item.id)));
+
+  if (domElements.amount) {
+    domElements.amount.textContent = `(Showing ${visibleIds.length} of ${data.length})`;
+  }
+
+  if (visibleIds.length === 0) {
+    const li = createElementUtil("li");
+    li.className = "version empty";
+    li.textContent = "All items are in Favorites. Remove some to see them here.";
+    domElements.versionsGrid.appendChild(li);
+    return;
+  }
+
+  visibleIds.forEach((item, index) => {
     const li = createElementUtil("li");
     li.classList.add("version");
-    li.id = `version${index}`;
+    li.id = `version-${item.id ?? index}`;
+    li.dataset.id = String(item.id ?? index);
+
     li.innerHTML = `
-      <span>Title: ${item.title}</span>
-      <span>Release: ${item.type === "release" ? "Single or EP" : item.type}</span>
-      <span>Year: ${item.year || "Unknown"}</span>
+      <span class="v-title">Title: ${item.title || "Unknown"}</span>
+      <span class="v-type">Release: ${item.type === "release" ? "Single or EP" : (item.type || "Unknown")}</span>
+      <span class="v-year">Year: ${item.year || "Unknown"}</span>
     `;
 
     const img = createElementUtil("img");
+    img.alt = `Cover art for ${item.title || "Unknown"}`;
+    img.loading = "lazy";
     img.src = item.cover_image || item.thumb || "";
-    img.alt = `Cover art for ${item.title}`;
-    li.appendChild(img);
+    img.onerror = () => {
+      if (item.thumb && img.src !== item.thumb) {
+        img.src = item.thumb;
+      } else {
+        img.remove();
+      }
+    };
 
+    li.appendChild(img);
     li.addEventListener("click", () => handleFavorites(item, li));
 
     domElements.versionsGrid.appendChild(li);
@@ -77,31 +116,32 @@ export const renderVersions = (data) => {
 };
 
 
+
+const getHiddenIds = () => new Set(JSON.parse(localStorage.getItem("hiddenIds") || "[]"));
+const setHiddenIds = (set) => localStorage.setItem("hiddenIds", JSON.stringify([...set]));
+
 const handleFavorites = (version, cardEl) => {
-  const favs = JSON.parse(localStorage.getItem("favs")) || [];
-  const alreadyInFavorites = favs.some(fav => fav.id === version.id)
+  const favs = JSON.parse(localStorage.getItem("favs") || "[]");
+  const alreadyInFavorites = favs.some(favs => favs.id === version.id);
+
   if (!alreadyInFavorites) {
-    favs.push(version);
-    localStorage.setItem("favs", JSON.stringify(favs));
+    localStorage.setItem("favs", JSON.stringify([...favs, version]));
+    const hiddenIds = getHiddenIds();
+    hiddenIds.add(String(version.id));
+    setHiddenIds(hiddenIds);
+    cardEl.remove();
   }
 
   const badge = document.createElement("span");
   badge.className = alreadyInFavorites ? "badge already" : "badge added";
   badge.textContent = alreadyInFavorites ? "Already in Favorites!" : "Added to Favorites!";
-
-  cardEl.style.position = "relative";
-  cardEl.appendChild(badge);
-
+  document.body.appendChild(badge);
   requestAnimationFrame(() => {
     badge.style.opacity = "1";
-    setTimeout(() => {
-      badge.style.opacity = "0";
-      badge.addEventListener("transitionend", () => badge.remove());
-    }, 800);
+    setTimeout(() => { badge.remove(); }, 700);
   });
-
-
 };
+
 
 
 
