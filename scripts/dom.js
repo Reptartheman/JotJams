@@ -51,11 +51,27 @@ export function renderYearCounters(items) {
 
 
 const renderInitialDisplay = (data) => {
-  domElements.trackTitle.textContent = `Track Title: ${data.title || "Unknown"}`;
-  domElements.artist.textContent = `Artist: ${data.artist || "Unknown"}`;
-  domElements.album.textContent = `Album: ${data.album || "Unknown"}`;
-  domElements.releaseYear.textContent = `Release Year: ${data.year || "Unknown"}`;
-  coverImage.src = `${data.coverImage}`;
+
+  const title = data?.title || "Unknown";
+  const artist = data?.artist || "Unknown";
+  const album = data?.album || "Unknown";
+  const year = data?.year || "Unknown";
+
+  domElements.trackTitle.textContent = `Track Title: ${title || "Unknown"}`;
+  domElements.artist.textContent = `Artist: ${artist || "Unknown"}`;
+  domElements.album.textContent = `Album: ${album || "Unknown"}`;
+  domElements.releaseYear.textContent = `Release Year: ${year || "Unknown"}`;
+  domElements.coverImage = `${data.coverImage}`;
+
+  const coverImageElement =
+    domElements.coverImg ||
+    document.getElementById("coverImage") ||
+    null;
+
+  if (coverImageElement) {
+    coverImageElement.src = data?.coverImage || "";
+    coverImageElement.alt = `Cover image for ${title}`;
+  }
 
   if (!domElements.resultsList.classList.contains("active")) {
     domElements.resultsList.classList.toggle("active");
