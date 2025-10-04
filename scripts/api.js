@@ -5,10 +5,15 @@ const queryConfig = {
 };
 
 const buildURL = (baseURL, endpoint) => {
-  return endpoint.startsWith("http") ? endpoint : `${baseURL}${endpoint}`;
+  const cleaned = endpoint.trim();
+  return cleaned.startsWith("http") ? cleaned : `${baseURL}${cleaned}`;
 };
 
 const fetchFromEndpoint = (baseURL) => async (endpoint) => {
+  if (typeof endpoint !== "string" || !endpoint.trim()) {
+    throw new Error("Invalid endpoint provided to Discogs API client.");
+  }
+
   const url = buildURL(baseURL, endpoint);
   return fetchFromURL(url);
 };
@@ -16,8 +21,12 @@ const fetchFromEndpoint = (baseURL) => async (endpoint) => {
 const fetchFromURL = async (url) => {
   try {
     const response = await fetch(url);
+    if (!response.ok) {
+      throw new Error(`Discogs request failed with status ${response.status}`);
+    }
     return await response.json();
   } catch (err) {
+    alert("For desired results please search the song name AND artist name");
     console.error("Error fetching data:", err);
     return null;
   }
@@ -27,9 +36,7 @@ const dataFetcher = (baseConfig) => {
   return fetchFromEndpoint(baseConfig.baseURL);
 };
 
-
 export const discogsAPIData = dataFetcher(queryConfig);
-
 
 export const initialDataFetch = async (userInput) => {
   const query = `/database/search?q=${encodeURIComponent(userInput)}&key=${
@@ -41,31 +48,25 @@ export const initialDataFetch = async (userInput) => {
   if (results.length === 0) {
     throw new Error("No results found for that search term.");
   }
-  console.log(results);
+
   return results;
 };
 
 export const dataFromMasterReleaseURL = async (releaseData) => {
   const data = await discogsAPIData(releaseData);
-  const updatedData = {
+  if (!data) return null;
+
+  return {
     title: data?.title,
-    artist: data?.artists[0].name,
+    artist: data?.artists?.[0]?.name,
     album: data?.title,
     year: data?.year,
     genre: data?.genres,
     style: data?.styles,
     trackData: data?.tracklist,
-    artistResourceUrl: data?.artists[0].resource_url,
+    artistResourceUrl: data?.artists?.[0]?.resource_url,
     mainReleaseData: data?.main_release_url,
     recentReleaseData: data?.most_recent_release_url,
     versions: data?.versions_url,
   };
-  return updatedData;
 };
-
-
-
-
-
-
-

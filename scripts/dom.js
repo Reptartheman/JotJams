@@ -1,8 +1,7 @@
 import {
-  countByYear,
   addIdsToElements,
   resetContainers,
-  createElementUtil
+  createElementUtil,
 } from "./utils";
 
 const elementsWithIds = [
@@ -32,16 +31,61 @@ const elementsWithIds = [
   "additionalReleases",
   "additionalReleasesList",
   "versionsGrid",
-  "amount"
+  "amount",
 ];
 
 const domElements = addIdsToElements(elementsWithIds);
 
-export function renderYearCounters(items) {
-  const countersEl = document.getElementById("counters");
+const getCountersElement = () => document.getElementById("counters");
+const getVersionsContainer = () =>
+  domElements.versionsGrid || document.getElementById("versionsGrid");
+
+const extractYearValue = (cardEl) => {
+  const yearNode = cardEl.querySelector(".v-year");
+  if (!yearNode) return "Unknown";
+
+  const rawText = yearNode.textContent || "";
+  const colonIndex = rawText.indexOf(":");
+  const parsed = colonIndex >= 0 ? rawText.slice(colonIndex + 1).trim() : rawText.trim();
+  return parsed || "Unknown";
+};
+
+function renderYearCountersFromDom() {
+  const countersEl = getCountersElement();
   if (!countersEl) return;
+
+  const container = getVersionsContainer();
+  if (!container) {
+    countersEl.innerHTML = "";
+    return;
+  }
+
+  const cards = Array.from(
+    container.querySelectorAll(".version:not(.empty)")
+  );
+
+  if (!cards.length) {
+    countersEl.innerHTML = "";
+    return;
+  }
+
+  const counts = new Map();
+  cards.forEach((card) => {
+    const year = extractYearValue(card);
+    counts.set(year, (counts.get(year) || 0) + 1);
+  });
+
+  const entries = Array.from(counts.entries()).sort((a, b) => {
+    const [yearA] = a;
+    const [yearB] = b;
+
+    if (yearA === "Unknown" && yearB !== "Unknown") return 1;
+    if (yearB === "Unknown" && yearA !== "Unknown") return -1;
+    return yearA.localeCompare(yearB);
+  });
+
   countersEl.innerHTML = "";
-  countByYear(items).forEach(([year, count]) => {
+  entries.forEach(([year, count]) => {
     const pill = createElementUtil("span");
     pill.className = "pill";
     pill.textContent = `${year}: ${count}`;
@@ -49,9 +93,21 @@ export function renderYearCounters(items) {
   });
 }
 
+const emptyStateMessage = "All items are in Favorites. Remove some to see them here.";
+
+const createEmptyStateNode = () => {
+  const li = createElementUtil("li");
+  li.className = "version empty";
+  li.textContent = emptyStateMessage;
+  return li;
+};
+
+const getHiddenIds = () =>
+  new Set(JSON.parse(localStorage.getItem("hiddenIds") || "[]"));
+const setHiddenIds = (set) =>
+  localStorage.setItem("hiddenIds", JSON.stringify([...set]));
 
 const renderInitialDisplay = (data) => {
-
   const title = data?.title || "Unknown";
   const artist = data?.artist || "Unknown";
   const album = data?.album || "Unknown";
@@ -64,9 +120,7 @@ const renderInitialDisplay = (data) => {
   domElements.coverImage = `${data.coverImage}`;
 
   const coverImageElement =
-    domElements.coverImg ||
-    document.getElementById("coverImage") ||
-    null;
+    domElements.coverImg || document.getElementById("coverImage") || null;
 
   if (coverImageElement) {
     coverImageElement.src = data?.coverImage || "";
@@ -82,21 +136,19 @@ const renderInitialDisplay = (data) => {
   }
 };
 
-export const renderVersions = (data) => {
+const renderVersions = (data) => {
   resetContainers(domElements.versionsGrid);
 
-  const hiddenIds = new Set(JSON.parse(localStorage.getItem("hiddenIds") || "[]"));
-  const visibleIds = data.filter(item => !hiddenIds.has(String(item.id)));
+  const hiddenIds = getHiddenIds();
+  const visibleIds = data.filter((item) => !hiddenIds.has(String(item.id)));
 
   if (domElements.amount) {
     domElements.amount.textContent = `(Showing ${visibleIds.length} of ${data.length})`;
   }
 
   if (visibleIds.length === 0) {
-    const li = createElementUtil("li");
-    li.className = "version empty";
-    li.textContent = "All items are in Favorites. Remove some to see them here.";
-    domElements.versionsGrid.appendChild(li);
+    domElements.versionsGrid.appendChild(createEmptyStateNode());
+    renderYearCountersFromDom();
     return;
   }
 
@@ -108,7 +160,11 @@ export const renderVersions = (data) => {
 
     li.innerHTML = `
       <span class="v-title">Title: ${item.title || "Unknown"}</span>
-      <span class="v-type">Release: ${item.type === "release" ? "Single or EP" : (item.type || "Unknown")}</span>
+      <span class="v-type">Release: ${
+        item.type === "release"
+          ? "Single or EP"
+          : item.type || "Unknown"
+      }</span>
       <span class="v-year">Year: ${item.year || "Unknown"}</span>
     `;
 
@@ -129,16 +185,13 @@ export const renderVersions = (data) => {
 
     domElements.versionsGrid.appendChild(li);
   });
+
+  renderYearCountersFromDom();
 };
-
-
-
-const getHiddenIds = () => new Set(JSON.parse(localStorage.getItem("hiddenIds") || "[]"));
-const setHiddenIds = (set) => localStorage.setItem("hiddenIds", JSON.stringify([...set]));
 
 const handleFavorites = (version, cardEl) => {
   const favs = JSON.parse(localStorage.getItem("favs") || "[]");
-  const alreadyInFavorites = favs.some(favs => favs.id === version.id);
+  const alreadyInFavorites = favs.some((fav) => fav.id === version.id);
 
   if (!alreadyInFavorites) {
     localStorage.setItem("favs", JSON.stringify([...favs, version]));
@@ -146,24 +199,32 @@ const handleFavorites = (version, cardEl) => {
     hiddenIds.add(String(version.id));
     setHiddenIds(hiddenIds);
     cardEl.remove();
+
+    if (!domElements.versionsGrid.querySelector(".version:not(.empty)")) {
+      domElements.versionsGrid.appendChild(createEmptyStateNode());
+    }
   }
+
+  renderYearCountersFromDom();
 
   const badge = document.createElement("span");
   badge.className = alreadyInFavorites ? "badge already" : "badge added";
-  badge.textContent = alreadyInFavorites ? "Already in Favorites!" : "Added to Favorites!";
+  badge.textContent = alreadyInFavorites
+    ? "Already in Favorites!"
+    : "Added to Favorites!";
   document.body.appendChild(badge);
   requestAnimationFrame(() => {
     badge.style.opacity = "1";
-    setTimeout(() => { badge.remove(); }, 700);
+    setTimeout(() => {
+      badge.remove();
+    }, 700);
   });
 };
-
-
-
 
 export {
   renderInitialDisplay,
   handleFavorites,
   domElements,
+  renderYearCountersFromDom,
+  renderVersions,
 };
-
