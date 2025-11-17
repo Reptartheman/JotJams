@@ -18,11 +18,6 @@ function renderCarousel(images) {
   });
 }
 
-
-
-
-
-
 const backToSearch = document.getElementById("backToSearch");
 const membersList = document.getElementById("membersList");
 const trackListingContainer = document.getElementById("trackListingContainer");
@@ -37,8 +32,6 @@ if (!links) {
   alert("No release data available.");
   window.location.href = "index.html";
 }
-
-
 
 const renderMembers = (members) => {
   if (!members) {
@@ -77,11 +70,9 @@ const renderEverything = async () => {
   const artistData = await discogsAPIData(links.artistResourceUrl);
   const mainReleaseData = await discogsAPIData(links.mainReleaseData);
 
-
   renderProfileDescription(artistData.profile);
   renderMembers(artistData.members);
   renderTrackList(mainReleaseData.tracklist);
-
   renderCarousel(mainReleaseData.images);
 };
 

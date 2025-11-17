@@ -8,14 +8,11 @@ import {
 } from "./data";
 
 import {
-  renderYearCountersFromDom,
   renderInitialDisplay,
   domElements,
   renderVersions,
 } from "./dom";
 import { getUserInput } from "./utils";
-
-
 
 const LS_KEYS = {
   previousResults: "previousSearch",
@@ -38,7 +35,6 @@ const state = { currentLinks: null };
 const renderSearchResults = ({ primary, versions, coverImage }) => {
   renderInitialDisplay({ ...primary, coverImage });
   renderVersions(versions);
-  renderYearCountersFromDom();
 };
 
 const fetchSearchResults = async (term) => {
@@ -134,9 +130,9 @@ domElements.searchInput.addEventListener(
   "keydown",
   (e) => e.key === "Enter" && handleSearchSubmit(e)
 );
-domElements.seeFavs.addEventListener("click", () =>
+/* domElements.seeFavs.addEventListener("click", () =>
   navigateWithRestore("favs.html")
-);
+); */
 domElements.seeMoreBtn.addEventListener("click", () => {
   if (!storage.get(LS_KEYS.seeMore))
     return alert("Please search first to load version details.");

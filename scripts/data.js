@@ -38,12 +38,6 @@ export const getPrimaryData = (data = {}) => {
   };
 };
 
-export const getSecondaryData = ({ genre, style, trackData } = {}) => ({
-  genre,
-  style,
-  trackData,
-});
-
 export const getAllOtherUrls = ({
   artistResourceUrl,
   mainReleaseData,

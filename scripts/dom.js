@@ -10,88 +10,18 @@ const elementsWithIds = [
   "mainContainer",
   "resultsContainer",
   "resultsList",
-  "resultsHeading",
   "trackTitle",
   "artist",
   "album",
   "releaseYear",
   "trackImageContainer",
-  "trackListingBtn",
-  "moreInfoBtn",
   "coverImg",
   "vinylContainer",
-  "description",
-  "addToFavs",
-  "seeFavs",
   "seeMoreBtn",
-  "trackListingContainer",
-  "moreInfoContainer",
-  "favoritesList",
-  "tracksMembersLists",
-  "additionalReleases",
-  "additionalReleasesList",
   "versionsGrid",
-  "amount",
 ];
 
 const domElements = addIdsToElements(elementsWithIds);
-
-const getCountersElement = () => document.getElementById("counters");
-const getVersionsContainer = () =>
-  domElements.versionsGrid || document.getElementById("versionsGrid");
-
-const extractYearValue = (cardEl) => {
-  const yearNode = cardEl.querySelector(".v-year");
-  if (!yearNode) return "Unknown";
-
-  const rawText = yearNode.textContent || "";
-  const colonIndex = rawText.indexOf(":");
-  const parsed = colonIndex >= 0 ? rawText.slice(colonIndex + 1).trim() : rawText.trim();
-  return parsed || "Unknown";
-};
-
-function renderYearCountersFromDom() {
-  const countersEl = getCountersElement();
-  if (!countersEl) return;
-
-  const container = getVersionsContainer();
-  if (!container) {
-    countersEl.innerHTML = "";
-    return;
-  }
-
-  const cards = Array.from(
-    container.querySelectorAll(".version:not(.empty)")
-  );
-
-  if (!cards.length) {
-    countersEl.innerHTML = "";
-    return;
-  }
-
-  const counts = new Map();
-  cards.forEach((card) => {
-    const year = extractYearValue(card);
-    counts.set(year, (counts.get(year) || 0) + 1);
-  });
-
-  const entries = Array.from(counts.entries()).sort((a, b) => {
-    const [yearA] = a;
-    const [yearB] = b;
-
-    if (yearA === "Unknown" && yearB !== "Unknown") return 1;
-    if (yearB === "Unknown" && yearA !== "Unknown") return -1;
-    return yearA.localeCompare(yearB);
-  });
-
-  countersEl.innerHTML = "";
-  entries.forEach(([year, count]) => {
-    const pill = createElementUtil("span");
-    pill.className = "pill";
-    pill.textContent = `${year}: ${count}`;
-    countersEl.appendChild(pill);
-  });
-}
 
 const emptyStateMessage = "All items are in Favorites. Remove some to see them here.";
 
@@ -142,13 +72,9 @@ const renderVersions = (data) => {
   const hiddenIds = getHiddenIds();
   const visibleIds = data.filter((item) => !hiddenIds.has(String(item.id)));
 
-  if (domElements.amount) {
-    domElements.amount.textContent = `(Showing ${visibleIds.length} of ${data.length})`;
-  }
 
   if (visibleIds.length === 0) {
     domElements.versionsGrid.appendChild(createEmptyStateNode());
-    renderYearCountersFromDom();
     return;
   }
 
@@ -185,8 +111,6 @@ const renderVersions = (data) => {
 
     domElements.versionsGrid.appendChild(li);
   });
-
-  renderYearCountersFromDom();
 };
 
 const handleFavorites = (version, cardEl) => {
@@ -204,8 +128,6 @@ const handleFavorites = (version, cardEl) => {
       domElements.versionsGrid.appendChild(createEmptyStateNode());
     }
   }
-
-  renderYearCountersFromDom();
 
   const badge = document.createElement("span");
   badge.className = alreadyInFavorites ? "badge already" : "badge added";
@@ -225,6 +147,5 @@ export {
   renderInitialDisplay,
   handleFavorites,
   domElements,
-  renderYearCountersFromDom,
   renderVersions,
 };

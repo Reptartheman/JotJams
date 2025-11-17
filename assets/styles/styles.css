@@ -202,7 +202,6 @@ footer {
   display: flex;
   justify-content: center;
   gap: var(--size-10);
-  flex-direction: column;
   align-items: center;
 }
 
@@ -233,8 +232,8 @@ ul.inner-data-container {
   flex-direction: column;
   position: relative;
   transition: all 0.3s ease;
-  /*   gap: var(--size-10);
-  padding: 10px; */
+  gap: var(--size-20);
+  padding: 10px;
   border-radius: 4px;
   text-align: center;
   align-items: center;
@@ -255,7 +254,7 @@ ul.inner-data-container {
 }
 
 .results-item {
-  font-size: var(--size-20);
+  font-size: var(--size-30);
 }
 
 .track-image-container {
@@ -299,7 +298,6 @@ ul.inner-data-container {
 .versions-grid {
   display: grid;
   grid-template-columns: repeat(5, 1fr);
-  grid-template-rows: repeat(6, 1fr);
   gap: var(--size-16);
   grid-auto-flow: row;
   overflow: scroll;
